@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class LerArquivosCsv {
     public static void main(String[] args) {
-        String cvsArquivo = "C:\\Users\\eduar\\Documents\\UEPB - 4º Período\\LEDA\\Projeto-LEDA\\passwords.csv";
+        String cvsArquivo = "passwords.csv";
         BufferedReader conteudoCsv = null;
         String linha = "";
         String csvSeparadorCampo = ",";
