@@ -17,6 +17,7 @@ public class LerArquivosCsv {
         try {
             conteudoCsv = new BufferedReader(new FileReader(cvsArquivo));
             escritorCsv = new BufferedWriter(new FileWriter(novoArquivo));
+            conteudoCsv.readLine();
             escritorCsv.write("Position,Password,Length,Data,Class\n");
 
             while ((linha = conteudoCsv.readLine()) != null) {
