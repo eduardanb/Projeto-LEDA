@@ -16,8 +16,8 @@ public class LerArquivosCsv {
         BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo));
         String linha;
         while ((linha = leitor.readLine()) != null) {
-            String[] campos = linha.split(",");
-            registros.add(campos);
+            String[] valores = linha.split(",");
+            registros.add(valores);
         }
         leitor.close();
         return registros;
