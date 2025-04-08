@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LerArquivosCsv {
     private String caminhoArquivo;
@@ -11,15 +9,27 @@ public class LerArquivosCsv {
         this.caminhoArquivo = caminhoArquivo;
     }
 
-    public List<String[]> lerCsv() throws IOException {
-        List<String[]> registros = new ArrayList<>();
-        BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo));
-        String linha;
-        while ((linha = leitor.readLine()) != null) {
-            String[] valores = linha.split(",");
-            registros.add(valores);
+    public String[] lerCsv() throws IOException {
+        int totalLinhas = contarLinhas();
+        String[] registros = new String[totalLinhas];
+
+        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
+            String linha;
+            int index = 0;
+            while ((linha = leitor.readLine()) != null) {
+                registros[index++] = linha;
+            }
         }
-        leitor.close();
         return registros;
+    }
+
+    private int contarLinhas() throws IOException {
+        int linhas = 0;
+        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
+            while (leitor.readLine() != null) {
+                linhas++;
+            }
+        }
+        return linhas;
     }
 }
