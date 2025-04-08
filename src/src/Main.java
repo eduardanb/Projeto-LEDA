@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,14 +14,15 @@ public class Main {
         Classificador classificador = new ClassificacaoDeSenhas();
 
         try {
-            List<String[]> registros = leitorCsv.lerCsv();
+            String[] registros = leitorCsv.lerCsv(); // Agora retorna um array unidimensional
             BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoSaida));
             escritor.write("Posicao,Senha,Tamanho,Data,Classificacao\n");
 
-            for (int i = 1; i < registros.size(); i++) {
-                String[] registro = registros.get(i);
+            for (int i = 1; i < registros.length; i++) { // Itera sobre o array
+                String linha = registros[i];
+                String[] registro = linha.split(",");
                 if (registro.length < 4) {
-                    System.out.println("Linha inválida: " + String.join(",", registro));
+                    System.out.println("Linha inválida: " + linha);
                     continue;
                 }
                 String senha = registro[1];
