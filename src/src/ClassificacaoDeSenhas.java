@@ -1,5 +1,6 @@
-public class ClassificacaoDeSenhas {
-    public static String classificar(String senha) {
+public class ClassificacaoDeSenhas implements Classificador {
+    @Override
+    public String classificar(String senha) {
         if (senha == null || senha.isEmpty()) {
             return "Sem Classificação";
         }

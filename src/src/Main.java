@@ -9,6 +9,8 @@ public class Main {
         String caminhoSaida = "src\\ArquivosCSV\\password_classifier.csv";
 
         LerArquivosCsv leitorCsv = new LerArquivosCsv(caminhoEntrada);
+        Classificador classificador = new ClassificacaoDeSenhas();
+
         try {
             List<String[]> registros = leitorCsv.lerCsv();
             BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoSaida));
@@ -21,7 +23,7 @@ public class Main {
                     continue;
                 }
                 String senha = registro[1];
-                String classificacao = ClassificacaoDeSenhas.classificar(senha);
+                String classificacao = classificador.classificar(senha);
                 escritor.write(registro[0] + "," + senha + "," + registro[2] + "," + registro[3] + "," + classificacao + "\n");
                 System.out.println("Posicao: " + registro[0] + " | Senha: " + senha + " | Tamanho: " + registro[2] + " | Data: " + registro[3] + " | Classificacao: " + classificacao);
             }
