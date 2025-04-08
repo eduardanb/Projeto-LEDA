@@ -50,6 +50,6 @@ Esta é apenas a parte 1 do projeto, que foca na classificação, transformaçã
 
 ---
 
-**Autor:** [Maria Eduarda da Nóbrega]  
+**Autor:** [Maria Eduarda da Nóbrega, João Victor da Silva Almeida Guimarães e Adrielly Carla]  
 **Data:** [18/03/2025]  
 **Versão:** 1.0
