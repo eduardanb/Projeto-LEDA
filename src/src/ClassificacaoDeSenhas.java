@@ -2,7 +2,7 @@ public class ClassificacaoDeSenhas implements Classificador {
     @Override
     public String classificar(String senha) {
         if (senha == null || senha.isEmpty()) {
-            return "Sem Classificação";
+            return "Sem Classificacao";
         }
 
         int tamanho = senha.length();
@@ -24,7 +24,7 @@ public class ClassificacaoDeSenhas implements Classificador {
         } else if (tamanho > 8 && tipos == 4) {
             return "Muito Boa";
         } else {
-            return "Sem Classificação";
+            return "Sem Classificacao";
         }
     }
 }
