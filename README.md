@@ -162,3 +162,5 @@ A **Parte 2** do projeto será focada em **ordenações**. O arquivo `passwords_
 Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: **melhor**, **médio** e **pior**.
 
 ---
+
+Colaboradores: [Maria Eduarda da Nóbrega, João Victor da Silva Almeida Guimarães e Adrielly Carla Ferreira de Melo]
