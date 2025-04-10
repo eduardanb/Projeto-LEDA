@@ -1,12 +1,11 @@
 # T2-Projeto Passwords
 
 ## **Descrição do Projeto**
-Este projeto tem como objetivo processar um grande conjunto de senhas contidas no arquivo `passwords.csv`, aplicando regras específicas para **classificação**, **transformação** e **filtragem**. O resultado é a geração de arquivos organizados e prontos para análises futuras.
+O **T2-Projeto Passwords** tem como objetivo processar um grande conjunto de senhas contidas no arquivo `passwords.csv`, aplicando regras específicas para **classificação**, **transformação** e **filtragem**. O resultado é a geração de arquivos organizados e prontos para análises futuras, como ordenações e estudos de desempenho de algoritmos.
 
-A Parte 1 do projeto foca em:
-1. **Classificação das senhas** com base em critérios predefinidos.
-2. **Transformação** do formato da data.
-3. **Filtragem** de senhas por categorias específicas.
+O projeto está dividido em duas partes:
+1. **Parte 1**: Classificação, transformação e filtragem das senhas.
+2. **Parte 2**: Ordenação das senhas utilizando diferentes algoritmos e cenários.
 
 ---
 
@@ -90,12 +89,16 @@ Durante a execução da Parte 1, os seguintes arquivos são gerados:
 1. Compile o código:
    ```bash
    javac src/src/*.java
-
+   ```
 2. Execute o programa:
-    java -cp src/src Main
+   ```bash
+   java -cp src/src Main
+   ```
 
-Estrutura do Projeto
+---
 
+## **Estrutura do Projeto**
+```plaintext
 Projeto-LEDA/
 ├── src/
 │   ├── Main.java                     # Classe principal
@@ -108,39 +111,54 @@ Projeto-LEDA/
 │   ├── password_classifier.csv       # Arquivo com as senhas classificadas
 │   ├── passwords_formated_data.csv   # Arquivo com a data transformada
 │   ├── passwords_classifier.csv      # Arquivo com senhas "Boa" e "Muito Boa"
+```
 
-### Exemplo de Entrada e Saída: 
+---
 
-#### Entrada (passwords.csv)
+## **Exemplo de Entrada e Saída**
+
+### **Entrada (`passwords.csv`)**
+```csv
 Posicao,Senha,Tamanho,Data
 1,abc123,6,2023-04-10 12:00:00
 2,Password@123,12,2023-04-10 12:00:00
 3,12345,5,2023-04-10 12:00:00
 4,StrongPass1!,11,2023-04-10 12:00:00
+```
 
-#### Saída 1 (password_classifier.csv)
+### **Saída 1 (`password_classifier.csv`)**
+```csv
 Posicao,Senha,Tamanho,Data,Classificacao
 1,abc123,6,2023-04-10 12:00:00,Fraca
 2,Password@123,12,2023-04-10 12:00:00,Muito Boa
 3,12345,5,2023-04-10 12:00:00,Ruim
 4,StrongPass1!,11,2023-04-10 12:00:00,Boa
+```
 
-#### Saída 2 (passwords_formated_data.csv)
+### **Saída 2 (`passwords_formated_data.csv`)**
+```csv
 Posicao,Senha,Tamanho,Data,Classificacao
 1,abc123,6,10/04/2023,Fraca
 2,Password@123,12,10/04/2023,Muito Boa
 3,12345,5,10/04/2023,Ruim
 4,StrongPass1!,11,10/04/2023,Boa
+```
 
-#### Saída 3 (passwords_classifier.csv)
+### **Saída 3 (`passwords_classifier.csv`)**
+```csv
 Posicao,Senha,Tamanho,Data,Classificacao
 2,Password@123,12,10/04/2023,Muito Boa
 4,StrongPass1!,11,10/04/2023,Boa
+```
 
-### Próximos Passos
-A Parte 2 do projeto será focada em ordenações. O arquivo passwords_formated_data.csv será utilizado como entrada para:
+---
 
-Ordenar as senhas pelo campo Tamanho em ordem decrescente.
-Ordenar as senhas pelo mês da coluna Data em ordem crescente.
-Ordenar as senhas pela coluna Data em ordem crescente.
-Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: melhor, médio e pior.
+## **Próximos Passos**
+A **Parte 2** do projeto será focada em **ordenações**. O arquivo `passwords_formated_data.csv` será utilizado como entrada para:
+1. Ordenar as senhas pelo campo `Tamanho` em ordem decrescente.
+2. Ordenar as senhas pelo **mês** da coluna `Data` em ordem crescente.
+3. Ordenar as senhas pela coluna `Data` em ordem crescente.
+
+Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: **melhor**, **médio** e **pior**.
+
+---
