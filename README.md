@@ -188,5 +188,7 @@ A **Parte 2** do projeto será focada em **ordenações**. O arquivo `passwords_
 Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: **melhor**, **médio** e **pior**.
 
 ---
+**OBS**: Para baixar um arquivo .zip basta ir em **código** e **Baixar ZIP** (no GitHub). Como no Canvas só aceita uma URL, enviamos apenas o link do repositório, mas, por via das dúvidas, adicionamos um arquivo .zip do projeto dentro da pasta.
 
+---
 Colaboradores: [Maria Eduarda da Nóbrega, João Victor da Silva Almeida Guimarães e Adrielly Carla Ferreira de Melo]
