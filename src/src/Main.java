@@ -22,7 +22,7 @@ public class Main {
             BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoSaida));
             
             // Escrevemos o cabeçalho do novo arquivo CSV
-            escritor.write("Posicao,Senha,Tamanho,Data,Classificacao\n");
+            escritor.write("Posicao,Senha,Tamanho,Data,Class\n");
 
             // Iteramos sobre cada linha do CSV (exceto o cabeçalho)
             for (int i = 1; i < registros.length; i++) {
@@ -48,10 +48,10 @@ public class Main {
             transformador.transformar(caminhoSaida, caminhoTransformado);
 
             // Classificamos novamente de acordo com uma nova lógica (boa ou muito boa)
-            classificacaoBoaeMuitoboa.classificar(caminhoSaida, caminhoBoaeMuitoBoa);
+            classificacaoBoaeMuitoboa.classificar(caminhoTransformado, caminhoBoaeMuitoBoa);
 
             // Exibimos no console o conteúdo do arquivo transformado
-            exibirArquivo(caminhoTransformado);
+            exibirArquivo(caminhoBoaeMuitoBoa);
 
         } catch (IOException e) {
             System.out.println("Erro ao processar o arquivo: " + e.getMessage());

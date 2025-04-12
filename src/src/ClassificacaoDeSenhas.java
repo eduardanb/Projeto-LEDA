@@ -16,13 +16,7 @@ public class ClassificacaoDeSenhas implements Classificador {
         boolean temEspecial = senha.matches(".*[^a-zA-Z0-9].*");
 
         // Contamos quantos tipos diferentes de caracteres a senha possui
-        boolean[] criterios = {temMinuscula, temMaiuscula, temNumero, temEspecial};
-        int tipos = 0;
-        for (int i = 0; i < criterios.length; i++) {
-            if (criterios[i]) {
-                tipos++;
-            }
-        }
+        int tipos = (temMinuscula ? 1 : 0) + (temMaiuscula ? 1 : 0) + (temNumero ? 1 : 0) + (temEspecial ? 1 : 0);
 
         // Classificamos com base no tamanho e na diversidade de caracteres
         if (tamanho < 5 && tipos == 1) {

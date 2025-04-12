@@ -12,7 +12,7 @@ public class ClassificacaoBoaeMuitoboa {
             String[] registros = leitorCsv.lerCsv();
 
             try (BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoSaida))) {
-                escritor.write("Posicao,Senha,Tamanho,Data,Classificacao\n");
+                escritor.write("Posicao,Senha,Tamanho,Data,Class\n");
 
                 for (int i = 1; i < registros.length; i++) {
                     String[] registro = registros[i].split(",");
