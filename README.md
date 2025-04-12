@@ -35,7 +35,7 @@ Após a classificação, o arquivo `password_classifier.csv` passa por uma trans
 ---
 
 ### **3. Filtragem**
-As senhas classificadas como **"Boa"** ou **"Muito Boa"** são filtradas do arquivo `passwords_formated_data.csv` e salvas em um novo arquivo.
+As senhas classificadas como **"Boa"** ou **"Muito Boa"** são filtradas do arquivo `password_classifier.csv` e salvas em um novo arquivo.
 
 #### **Resultado**
 - Um novo arquivo chamado `passwords_classifier.csv` é gerado, contendo apenas as senhas filtradas.
