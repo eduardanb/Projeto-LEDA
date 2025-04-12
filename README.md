@@ -22,7 +22,7 @@ As senhas do arquivo `passwords.csv` são classificadas de acordo com as seguint
 - **Sem Classificação**: Senhas que não se enquadram em nenhuma das categorias acima.
 
 #### **Resultado**
-- Um novo arquivo chamado `password_classifier.csv` é gerado, contendo as senhas classificadas com uma nova coluna chamada `Classificacao`.
+- Um novo arquivo chamado `password_classifier.csv` é gerado, contendo as senhas classificadas com uma nova coluna chamada `Class`.
 
 ---
 
@@ -49,21 +49,21 @@ Durante a execução da Parte 1, os seguintes arquivos são gerados:
    - Contém todas as senhas classificadas com base nas regras descritas.
    - Estrutura:
      ```
-     Posicao,Senha,Tamanho,Data,Classificacao
+     Posicao,Senha,Tamanho,Data,Class
      ```
 
 2. **`passwords_formated_data.csv`**:
    - Contém as senhas com a data transformada para o formato `DD/MM/AAAA`.
    - Estrutura:
      ```
-     Posicao,Senha,Tamanho,Data,Classificacao
+     Posicao,Senha,Tamanho,Data,Class
      ```
 
 3. **`passwords_classifier.csv`**:
    - Contém apenas as senhas classificadas como **"Boa"** ou **"Muito Boa"**.
    - Estrutura:
      ```
-     Posicao,Senha,Tamanho,Data,Classificacao
+     Posicao,Senha,Tamanho,Data,Class
      ```
 
 ---
