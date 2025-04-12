@@ -6,26 +6,35 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
+        // Definimos os caminhos dos arquivos que vamos usar
         String caminhoEntrada = "src\\ArquivosCSV\\passwords.csv";
         String caminhoSaida = "src\\ArquivosCSV\\password_classifier.csv";
         String caminhoTransformado = "src\\ArquivosCSV\\passwords_formated_data.csv";
         String caminhoBoaeMuitoBoa = "src\\ArquivosCSV\\passwords_classifier.csv";
 
+        // Criamos os objetos para leitura e classificação das senhas
         LerArquivosCsv leitorCsv = new LerArquivosCsv(caminhoEntrada);
         Classificador classificador = new ClassificacaoDeSenhas();
 
         try {
-            String[] registros = leitorCsv.lerCsv(); // Agora retorna um array unidimensional
+            // Lemos o conteúdo do arquivo CSV original
+            String[] registros = leitorCsv.lerCsv();
             BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoSaida));
+            
+            // Escrevemos o cabeçalho do novo arquivo CSV
             escritor.write("Posicao,Senha,Tamanho,Data,Classificacao\n");
 
-            for (int i = 1; i < registros.length; i++) { // Itera sobre o array
+            // Iteramos sobre cada linha do CSV (exceto o cabeçalho)
+            for (int i = 1; i < registros.length; i++) {
                 String linha = registros[i];
                 String[] registro = linha.split(",");
                 if (registro.length < 4) {
+                    // Ignoramos linhas inválidas
                     System.out.println("Linha inválida: " + linha);
                     continue;
                 }
+
+                // Classificamos a senha e escrevemos no novo arquivo
                 String senha = registro[1];
                 String classificacao = classificador.classificar(senha);
                 escritor.write(registro[0] + "," + senha + "," + registro[2] + "," + registro[3] + "," + classificacao + "\n");
@@ -33,13 +42,15 @@ public class Main {
 
             escritor.close();
 
-            // Transformar o arquivo para o novo formato
+            // Transformamos o arquivo para outro formato com base nas regras definidas
             ClassificacaoBoaeMuitoboa classificacaoBoaeMuitoboa = new ClassificacaoBoaeMuitoboa();
             TransformadorDeDados transformador = new TransformadorDeDados();
             transformador.transformar(caminhoSaida, caminhoTransformado);
-            classificacaoBoaeMuitoboa.classificar(caminhoSaida,caminhoBoaeMuitoBoa);
 
-            // Exibir o conteúdo do novo arquivo CSV no console
+            // Classificamos novamente de acordo com uma nova lógica (boa ou muito boa)
+            classificacaoBoaeMuitoboa.classificar(caminhoSaida, caminhoBoaeMuitoBoa);
+
+            // Exibimos no console o conteúdo do arquivo transformado
             exibirArquivo(caminhoTransformado);
 
         } catch (IOException e) {
@@ -47,6 +58,7 @@ public class Main {
         }
     }
 
+    // Função auxiliar para exibir um arquivo linha por linha no console
     private static void exibirArquivo(String caminhoArquivo) {
         try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
             String linha;
