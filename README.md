@@ -68,29 +68,55 @@ Durante a execução da Parte 1, os seguintes arquivos são gerados:
 
 ---
 
-## **Execução do Código**
+## **Como Rodar**
+
+### **Pré-requisitos**
+- Certifique-se de ter o **Java JDK** instalado (versão 8 ou superior).
+- Verifique se o `javac` e o `java` estão configurados no `PATH` do sistema.
 
 ### **Passo a Passo**
-1. **Classificação**:
-   - O arquivo `passwords.csv` é lido e processado.
-   - As senhas são classificadas e salvas no arquivo `password_classifier.csv`.
 
-2. **Transformação**:
-   - O arquivo `password_classifier.csv` é lido.
-   - A data é transformada para o formato `DD/MM/AAAA`.
-   - O resultado é salvo no arquivo `passwords_formated_data.csv`.
+#### **Windows**
+1. Abra o Prompt de Comando (cmd).
+2. Navegue até o diretório do projeto:
+   ```cmd
+   cd c:\Users\eduar\Documents\UEPB - 4º Período\LEDA\Projeto-LEDA
+   ```
+3. Compile o código:
+   ```cmd
+   javac src\src\*.java
+   ```
+4. Execute o programa:
+   ```cmd
+   java -cp src\src Main
+   ```
 
-3. **Filtragem**:
-   - O arquivo `passwords_formated_data.csv` é lido.
-   - Apenas as senhas classificadas como **"Boa"** ou **"Muito Boa"** são filtradas.
-   - O resultado é salvo no arquivo `passwords_classifier.csv`.
-
-### **Como Executar**
-1. Compile o código:
+#### **Linux**
+1. Abra o terminal.
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd /caminho/para/Projeto-LEDA
+   ```
+3. Compile o código:
    ```bash
    javac src/src/*.java
    ```
-2. Execute o programa:
+4. Execute o programa:
+   ```bash
+   java -cp src/src Main
+   ```
+
+#### **macOS**
+1. Abra o terminal.
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd /caminho/para/Projeto-LEDA
+   ```
+3. Compile o código:
+   ```bash
+   javac src/src/*.java
+   ```
+4. Execute o programa:
    ```bash
    java -cp src/src Main
    ```
