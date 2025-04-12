@@ -48,7 +48,7 @@ public class Main {
             transformador.transformar(caminhoSaida, caminhoTransformado);
 
             // Classificamos novamente de acordo com uma nova lógica (boa ou muito boa)
-            classificacaoBoaeMuitoboa.classificar(caminhoTransformado, caminhoBoaeMuitoBoa);
+            classificacaoBoaeMuitoboa.classificar(caminhoSaida, caminhoBoaeMuitoBoa);
 
             // Exibimos no console o conteúdo do arquivo transformado
             exibirArquivo(caminhoBoaeMuitoBoa);
