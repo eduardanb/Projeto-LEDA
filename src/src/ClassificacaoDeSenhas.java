@@ -9,7 +9,7 @@ public class ClassificacaoDeSenhas implements Classificador {
 
         int tamanho = senha.length();
 
-        // Verificamos se a senha possui cada tipo de caractere
+        // Verificamos se a senha possui cada tipo de caractere, utilizando o regex
         boolean temMinuscula = senha.matches(".*[a-z].*");
         boolean temMaiuscula = senha.matches(".*[A-Z].*");
         boolean temNumero = senha.matches(".*[0-9].*");

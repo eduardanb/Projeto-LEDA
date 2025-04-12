@@ -154,7 +154,7 @@ Posicao,Senha,Tamanho,Data
 
 ### **Saída 1 (`password_classifier.csv`)**
 ```csv
-Posicao,Senha,Tamanho,Data,Classificacao
+Posicao,Senha,Tamanho,Data,Class
 1,abc123,6,2023-04-10 12:00:00,Fraca
 2,Password@123,12,2023-04-10 12:00:00,Muito Boa
 3,12345,5,2023-04-10 12:00:00,Ruim
@@ -163,7 +163,7 @@ Posicao,Senha,Tamanho,Data,Classificacao
 
 ### **Saída 2 (`passwords_formated_data.csv`)**
 ```csv
-Posicao,Senha,Tamanho,Data,Classificacao
+Posicao,Senha,Tamanho,Data,Class
 1,abc123,6,10/04/2023,Fraca
 2,Password@123,12,10/04/2023,Muito Boa
 3,12345,5,10/04/2023,Ruim
@@ -172,9 +172,9 @@ Posicao,Senha,Tamanho,Data,Classificacao
 
 ### **Saída 3 (`passwords_classifier.csv`)**
 ```csv
-Posicao,Senha,Tamanho,Data,Classificacao
-2,Password@123,12,10/04/2023,Muito Boa
-4,StrongPass1!,11,10/04/2023,Boa
+Posicao,Senha,Tamanho,Data,Class
+22,klara-tershina3H,16,2016-04-10 19:00:01,Muito Boa
+60,khmer100.03278&?><Mnb,21,2015-11-04 02:02:07,Muito Boa
 ```
 
 ---
