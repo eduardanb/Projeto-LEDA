@@ -1,5 +1,5 @@
 package Ordenacoes.CountingeCasos;
 
-public class eu {
+public class CountingPiorCaso {
     
 }
