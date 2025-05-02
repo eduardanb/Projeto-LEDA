@@ -4,6 +4,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import Classificação.ClassificacaoBoaeMuitoboa;
+import Classificação.ClassificacaoDeSenhas;
+import Classificação.Classificador;
+import Classificação.LerArquivosCsv;
+import Classificação.TransformadorDeDados;
+
 public class Main {
     public static void main(String[] args) {
         // Definimos os caminhos dos arquivos que vamos usar
@@ -11,6 +17,7 @@ public class Main {
         String caminhoSaida = "src\\ArquivosCSV\\password_classifier.csv";
         String caminhoTransformado = "src\\ArquivosCSV\\passwords_formated_data.csv";
         String caminhoBoaeMuitoBoa = "src\\ArquivosCSV\\passwords_classifier.csv";
+        
 
         // Criamos os objetos para leitura e classificação das senhas
         LerArquivosCsv leitorCsv = new LerArquivosCsv(caminhoEntrada);
