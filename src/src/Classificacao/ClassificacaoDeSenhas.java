@@ -1,4 +1,4 @@
-package Classificação;
+package Classificacao;
 public class ClassificacaoDeSenhas implements Classificador {
 
     @Override
