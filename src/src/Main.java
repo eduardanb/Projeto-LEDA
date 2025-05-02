@@ -9,6 +9,7 @@ import Classificacao.ClassificacaoDeSenhas;
 import Classificacao.Classificador;
 import Classificacao.LerArquivosCsv;
 import Classificacao.TransformadorDeDados;
+import Ordenacoes.OrdenacaoLength;
 
 public class Main {
     public static void main(String[] args) {
@@ -58,6 +59,8 @@ public class Main {
 
             // Exibimos no console o conteúdo do arquivo transformado
             exibirArquivo(caminhoBoaeMuitoBoa);
+
+            OrdenacaoLength.Ordenacao(args);
 
         } catch (IOException e) {
             System.out.println("Erro ao processar o arquivo: " + e.getMessage());
