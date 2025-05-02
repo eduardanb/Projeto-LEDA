@@ -1,4 +1,4 @@
-package Ordenacoes.SelectioneCasos;
+package Ordenacoes.SelectionSort;
 
 public class SelectionMelhorCaso {
     

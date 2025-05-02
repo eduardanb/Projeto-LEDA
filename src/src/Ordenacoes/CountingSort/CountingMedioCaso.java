@@ -1,4 +1,4 @@
-package Ordenacoes.CountingeCasos;
+package Ordenacoes.CountingSort;
 
 import java.io.*;
 import java.util.*;

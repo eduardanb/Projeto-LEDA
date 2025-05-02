@@ -1,4 +1,4 @@
-package Ordenacoes.HeapeCasos;
+package Ordenacoes.HeapSort;
 
 public class HeapMelhorCaso {
     

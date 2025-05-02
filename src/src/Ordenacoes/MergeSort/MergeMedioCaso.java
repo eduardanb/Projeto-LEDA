@@ -1,4 +1,4 @@
-package Ordenacoes.MergeeCasos;
+package Ordenacoes.MergeSort;
 
 public class MergeMedioCaso {
     

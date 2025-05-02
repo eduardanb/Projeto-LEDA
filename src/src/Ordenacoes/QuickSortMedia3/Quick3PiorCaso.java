@@ -1,4 +1,4 @@
-package Ordenacoes.QuickMedia3eCasos;
+package Ordenacoes.QuickSortMedia3;
 
 public class Quick3PiorCaso {
     

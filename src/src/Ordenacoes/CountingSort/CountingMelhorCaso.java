@@ -1,4 +1,4 @@
-package Ordenacoes.CountingeCasos;
+package Ordenacoes.CountingSort;
 
 public class CountingMelhorCaso {
     

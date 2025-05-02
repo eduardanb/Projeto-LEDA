@@ -1,4 +1,4 @@
-package Ordenacoes.InsectioneCasos;
+package Ordenacoes.InsectionSort;
 
 public class InsectionPiorCaso {
     

@@ -3,7 +3,7 @@ package Ordenacoes;
 Deve-se gerar um arquivo para cada algoritmo de ordenação e o tipo de caso. Por exemplo, passwords_length_insertionSort_medioCaso.csv, passwords_length_insertionSort_piorCaso.csv, passwords_length_insertionSort_melhorCaso.csv */
 
 import Classificacao.LerArquivosCsv;
-import Ordenacoes.CountingeCasos.CountingMedioCaso;
+import Ordenacoes.CountingSort.CountingMedioCaso;
 
 import java.io.IOException;
 
