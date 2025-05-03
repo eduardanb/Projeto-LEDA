@@ -59,6 +59,54 @@ public class MergeMedioCaso {
         }
     }
 
+    // Método para ordenar por mês no médio caso
+    public static void mergeSortCSVDataMes(String inputFilePath, String outputFilePath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Ler o arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
+            }
+        }
+
+        // Extrair a coluna "mês" (ajuste o índice conforme necessário)
+        int n = rows.size();
+        int[] months = new int[n];
+        for (int i = 0; i < n; i++) {
+            months[i] = Integer.parseInt(rows.get(i)[1]); // Supondo que o mês está na coluna 1
+        }
+
+        // Aplicar Merge Sort no médio caso
+        int[] sortedIndices = mergeSortWithIndices(months);
+
+        // Reorganizar as linhas do CSV com base na ordenação
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : sortedIndices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escrever o arquivo CSV ordenado
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            if (header != null) {
+                bw.write(String.join(",", header));
+                bw.newLine();
+            }
+            for (String[] row : sortedRows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        }
+    }
+
     // Método auxiliar para aplicar Merge Sort e retornar os índices ordenados
     private static int[] mergeSortWithIndices(int[] array) {
         int n = array.length;

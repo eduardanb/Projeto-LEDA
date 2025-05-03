@@ -9,7 +9,9 @@ import Classificacao.ClassificacaoDeSenhas;
 import Classificacao.Classificador;
 import Classificacao.LerArquivosCsv;
 import Classificacao.TransformadorDeDados;
+import Ordenacoes.OrdenacaoDataCrescente;
 import Ordenacoes.OrdenacaoLengthDecrescente;
+import Ordenacoes.OrdenacaoPorMesCrescente;
 
 public class Main {
     public static void main(String[] args) {
@@ -61,11 +63,17 @@ public class Main {
             exibirArquivo(caminhoBoaeMuitoBoa);
 
             OrdenacaoLengthDecrescente.Ordenacao(args);
+            //OrdenacaoDataCrescente.Ordenacao(args);
+           //OrdenacaoPorMesCrescente.Ordenacao(args);
 
         } catch (IOException e) {
             System.out.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+        OrdenacaoLengthDecrescente.TempoDeExecucao();
+        //OrdenacaoDataCrescente.TempoDeExecucao();
+        //OrdenacaoPorMesCrescente.TempoDeExecucao();
     }
+    
 
     // Função auxiliar para exibir um arquivo linha por linha no console
     private static void exibirArquivo(String caminhoArquivo) {

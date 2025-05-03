@@ -61,6 +61,65 @@ public class MergePiorCaso {
         }
     }
 
+    // Método para ordenar por mês no pior caso
+    public static void mergeSortCSVDataMes(String inputFilePath, String outputFilePath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Ler o arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
+            }
+        }
+
+        // Extrair a coluna "mês" (ajuste o índice conforme necessário)
+        int n = rows.size();
+        int[] months = new int[n];
+        for (int i = 0; i < n; i++) {
+            months[i] = Integer.parseInt(rows.get(i)[1]); // Supondo que o mês está na coluna 1
+        }
+
+        // Preparar o pior caso (ordenar em ordem decrescente)
+        Arrays.sort(months);
+        for (int i = 0; i < months.length / 2; i++) {
+            int temp = months[i];
+            months[i] = months[months.length - 1 - i];
+            months[months.length - 1 - i] = temp;
+        }
+
+        // Reorganizar as linhas do CSV com base na ordenação
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int month : months) {
+            for (String[] row : rows) {
+                if (Integer.parseInt(row[1]) == month) {
+                    sortedRows.add(row);
+                    rows.remove(row);
+                    break;
+                }
+            }
+        }
+
+        // Escrever o arquivo CSV ordenado
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            if (header != null) {
+                bw.write(String.join(",", header));
+                bw.newLine();
+            }
+            for (String[] row : sortedRows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        }
+    }
+
     // Método para preparar o pior caso (alternar valores altos e baixos)
     private static void prepareWorstCase(int[] array) {
         Arrays.sort(array); // Ordena em ordem crescente
