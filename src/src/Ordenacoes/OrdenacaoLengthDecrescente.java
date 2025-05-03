@@ -7,7 +7,7 @@ import Ordenacoes.CountingSort.CountingMedioCaso;
 
 import java.io.IOException;
 
-public class OrdenacaoLength {
+public class OrdenacaoLengthDecrescente {
     String LerArquivosCsv = "src\\ArquivosCSV\\passwords_formated_data.csv";
     
     String caminhoSaidaInsectionMedio = "src\\ArquivosCSV\\passwords_length_insertionSort_medioCaso.csv";
