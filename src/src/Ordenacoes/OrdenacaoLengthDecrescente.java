@@ -104,7 +104,7 @@ public class OrdenacaoLengthDecrescente {
 
     // Método principal para executar as ordenações
     public static void Ordenacao(String[] args) {
-        OrdenacaoLength ordenacao = new OrdenacaoLength();
+        OrdenacaoLengthDecrescente ordenacao = new OrdenacaoLengthDecrescente();
 
         // Counting Sort - Caso Médio
         ordenacao.countingSortMedioCaso();
