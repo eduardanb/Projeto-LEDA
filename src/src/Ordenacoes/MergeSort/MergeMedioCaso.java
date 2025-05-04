@@ -1,70 +1,30 @@
 package Ordenacoes.MergeSort;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class MergeMedioCaso {
-    // Método para ordenar um arquivo CSV usando Merge Sort
-    public static void mergeSortCSV(String inputFilePath, String outputFilePath) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null; // Para armazenar os cabeçalhos
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(","); // Armazena os cabeçalhos
-                    isFirstLine = false;
-                    continue; // Pula a primeira linha
-                }
-                rows.add(line.split(","));
-            }
-        }
 
-        // Extrair a coluna "length" e convertê-la para um array
-        int n = rows.size();
-        int[] lengths = new int[n];
-        for (int i = 0; i < n; i++) {
-            try {
-                // Tenta converter o valor para inteiro
-                lengths[i] = (int) Double.parseDouble(rows.get(i)[2]); // Ajuste o índice da coluna para 2
-            } catch (NumberFormatException e) {
-                // Trata valores inválidos
-                System.err.println("Valor inválido encontrado na linha " + (i + 1) + ": " + rows.get(i)[2]);
-                lengths[i] = 0; // Define um valor padrão ou trate conforme necessário
-            }
-        }
-
-        // Aplicar Merge Sort na coluna "length"
-        int[] sortedIndices = mergeSortWithIndices(lengths);
-
-        // Reorganizar as linhas do CSV com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : sortedIndices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        // Escrever o arquivo CSV ordenado
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            // Escrever os cabeçalhos primeiro
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            // Escrever as linhas ordenadas
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
+    public static void mergeSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
+        processCSV(inputFilePath, outputFilePath, 2); // Coluna 2 = length
     }
 
-    // Método para ordenar por mês no médio caso
-    public static void mergeSortCSVDataMes(String inputFilePath, String outputFilePath) throws IOException {
+    public static void mergeSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithDate(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+    }
+
+    public static void mergeSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithMonth(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+    }
+
+    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
         List<String[]> rows = new ArrayList<>();
         String[] header = null;
 
-        // Ler o arquivo CSV
+        // Leitura do arquivo CSV
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
             boolean isFirstLine = true;
@@ -78,48 +38,158 @@ public class MergeMedioCaso {
             }
         }
 
-        // Extrair a coluna "mês" (ajuste o índice conforme necessário)
         int n = rows.size();
-        int[] months = new int[n];
+        long[] values = new long[n];
+        int[] indices = new int[n];
+
+        // Inicializa índices e captura os valores da coluna indicada
         for (int i = 0; i < n; i++) {
-            months[i] = Integer.parseInt(rows.get(i)[1]); // Supondo que o mês está na coluna 1
+            indices[i] = i;
+            try {
+                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
+            } catch (NumberFormatException e) {
+                System.err.println("Valor inválido encontrado na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                values[i] = 0;
+            }
         }
 
-        // Aplicar Merge Sort no médio caso
-        int[] sortedIndices = mergeSortWithIndices(months);
+        // Ordena os índices com base nos valores
+        int[] sortedIndices = mergeSortWithIndices(values);
 
-        // Reorganizar as linhas do CSV com base na ordenação
+        // Reorganiza as linhas com base na ordenação
         List<String[]> sortedRows = new ArrayList<>();
         for (int index : sortedIndices) {
             sortedRows.add(rows.get(index));
         }
 
-        // Escrever o arquivo CSV ordenado
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, header, sortedRows);
+    }
+
+    private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
+            }
+        }
+
+        int n = rows.size();
+        long[] values = new long[n];
+        int[] indices = new int[n];
+
+        // Converter a data para número de dias desde 1970
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                String dataStr = rows.get(i)[columnIndex];
+                LocalDate data = LocalDate.parse(dataStr, formatter);
+                values[i] = data.toEpochDay();
+            } catch (DateTimeParseException e) {
+                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                values[i] = Long.MIN_VALUE;
+            }
+        }
+
+        // Ordena os índices com base nos valores
+        int[] sortedIndices = mergeSortWithIndices(values);
+
+        // Reorganiza as linhas com base na ordenação
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : sortedIndices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, header, sortedRows);
+    }
+
+    private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
+            }
+        }
+
+        int n = rows.size();
+        long[] values = new long[n];
+        int[] indices = new int[n];
+
+        // Extrair o mês da coluna de data
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                String dataStr = rows.get(i)[columnIndex];
+                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                    throw new IllegalArgumentException("Formato de data inválido");
+                }
+                String[] partes = dataStr.split("/");
+                values[i] = Long.parseLong(partes[1]); // Extrai o mês
+            } catch (Exception e) {
+                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                values[i] = 0;
+            }
+        }
+
+        // Ordena os índices com base nos valores
+        int[] sortedIndices = mergeSortWithIndices(values);
+
+        // Reorganiza as linhas com base na ordenação
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : sortedIndices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, header, sortedRows);
+    }
+
+    private static void writeCSV(String outputFilePath, String[] header, List<String[]> rows) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
             if (header != null) {
                 bw.write(String.join(",", header));
                 bw.newLine();
             }
-            for (String[] row : sortedRows) {
+            for (String[] row : rows) {
                 bw.write(String.join(",", row));
                 bw.newLine();
             }
         }
     }
 
-    // Método auxiliar para aplicar Merge Sort e retornar os índices ordenados
-    private static int[] mergeSortWithIndices(int[] array) {
+    private static int[] mergeSortWithIndices(long[] array) {
         int n = array.length;
         int[] indices = new int[n];
         for (int i = 0; i < n; i++) {
-            indices[i] = i; // Inicializa os índices
+            indices[i] = i;
         }
         mergeSortHelper(array, indices, 0, n - 1);
         return indices;
     }
 
-    // Método recursivo para dividir o array e aplicar o Merge Sort
-    private static void mergeSortHelper(int[] array, int[] indices, int left, int right) {
+    private static void mergeSortHelper(long[] array, int[] indices, int left, int right) {
         if (left < right) {
             int mid = (left + right) / 2;
             mergeSortHelper(array, indices, left, mid);
@@ -128,17 +198,15 @@ public class MergeMedioCaso {
         }
     }
 
-    // Método para mesclar dois subarrays ordenados
-    private static void merge(int[] array, int[] indices, int left, int mid, int right) {
+    private static void merge(long[] array, int[] indices, int left, int mid, int right) {
         int n1 = mid - left + 1;
         int n2 = right - mid;
 
-        int[] leftArray = new int[n1];
-        int[] rightArray = new int[n2];
+        long[] leftArray = new long[n1];
+        long[] rightArray = new long[n2];
         int[] leftIndices = new int[n1];
         int[] rightIndices = new int[n2];
 
-        // Copia os dados para os arrays temporários
         for (int i = 0; i < n1; i++) {
             leftArray[i] = array[left + i];
             leftIndices[i] = indices[left + i];
@@ -148,7 +216,6 @@ public class MergeMedioCaso {
             rightIndices[i] = indices[mid + 1 + i];
         }
 
-        // Mescla os arrays temporários de volta no array original
         int i = 0, j = 0, k = left;
         while (i < n1 && j < n2) {
             if (leftArray[i] <= rightArray[j]) {
@@ -163,7 +230,6 @@ public class MergeMedioCaso {
             k++;
         }
 
-        // Copia os elementos restantes do subarray esquerdo, se houver
         while (i < n1) {
             array[k] = leftArray[i];
             indices[k] = leftIndices[i];
@@ -171,7 +237,6 @@ public class MergeMedioCaso {
             k++;
         }
 
-        // Copia os elementos restantes do subarray direito, se houver
         while (j < n2) {
             array[k] = rightArray[j];
             indices[k] = rightIndices[j];
