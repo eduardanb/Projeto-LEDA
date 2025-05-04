@@ -17,6 +17,9 @@ public class OrdenacaoDataCrescente {
     static long TempoTotalMergeMelhorCaso = 0;
     static long TempoTotalMergePiorCaso = 0;
     static long TempoTotalMergeMedioCaso = 0;
+    static long TempoTotalQuickMedianaDe3MelhorCaso = 0;
+    static long TempoTotalQuickMedianaDe3PiorCaso = 0;
+    static long TempoTotalQuickMedianaDe3MedioCaso = 0;
     public static void Ordenacao(String[] args) {
         // Exemplo de uso do Counting Sort para ordenar um arquivo CSV pela coluna "length"
         String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
@@ -25,7 +28,7 @@ public class OrdenacaoDataCrescente {
         String SaidaMelhorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_melhorCaso.csv"; 
         int max = 100; // Substitua pelo valor máximo esperado na coluna "length"
 
-        try {
+        /*try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
             CountingMedioCaso.countingSortCSVData(EntradaCSV, SaidaMedioCasoCounting);
@@ -90,6 +93,41 @@ public class OrdenacaoDataCrescente {
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoMerge);
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }*/
+
+        // Quick Sort mediana 3
+        String SaidaMedioCasoQuick = "src\\ArquivosCSVOrdenados\\passwords_data_quickSortmedianade3_medioCaso.csv";
+        try {
+            // Chamada para o método de ordenação Quick Sort
+            long Inicio = System.nanoTime();
+            Quick3MedioCaso.QuickSort3CSVData(EntradaCSV, SaidaMedioCasoQuick);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3MedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMedioCasoQuick);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        String SaidaPiorCasoQuick = "src\\ArquivosCSVOrdenados\\passwords_data_quickSortmedianade3_piorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Quick Sort
+            long Inicio = System.nanoTime();
+            Quick3PiorCaso.QuickSort3CSVData(EntradaCSV, SaidaPiorCasoQuick);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3PiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaPiorCasoQuick);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        String SaidaMelhorCasoQuick = "src\\ArquivosCSVOrdenados\\passwords_data_quickSortmedianade3_melhorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Quick Sort
+            long Inicio = System.nanoTime();
+            Quick3MelhorCaso.QuickSort3CSVData(EntradaCSV, SaidaMelhorCasoQuick);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3MelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoQuick);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
 
     }
@@ -101,6 +139,9 @@ public class OrdenacaoDataCrescente {
             "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
             "Merge Sort Melhor Caso: " + TempoTotalMergeMelhorCaso + " ns\n" +
             "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +
-            "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n");
+            "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n"+
+            "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
+            "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
+            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n");
     }
 }

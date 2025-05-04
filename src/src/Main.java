@@ -63,15 +63,15 @@ public class Main {
             exibirArquivo(caminhoBoaeMuitoBoa);
 
             OrdenacaoLengthDecrescente.Ordenacao(args);
-            //OrdenacaoDataCrescente.Ordenacao(args);
-           //OrdenacaoPorMesCrescente.Ordenacao(args);
+            OrdenacaoDataCrescente.Ordenacao(args);
+            OrdenacaoPorMesCrescente.Ordenacao(args);
 
         } catch (IOException e) {
             System.out.println("Erro ao processar o arquivo: " + e.getMessage());
         }
         OrdenacaoLengthDecrescente.TempoDeExecucao();
-        //OrdenacaoDataCrescente.TempoDeExecucao();
-        //OrdenacaoPorMesCrescente.TempoDeExecucao();
+        OrdenacaoDataCrescente.TempoDeExecucao();
+        OrdenacaoPorMesCrescente.TempoDeExecucao();
     }
     
 

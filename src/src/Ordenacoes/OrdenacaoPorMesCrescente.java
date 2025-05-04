@@ -2,6 +2,10 @@ package Ordenacoes;
 
 import Ordenacoes.CountingSort.*;
 import Ordenacoes.MergeSort.*;
+import Ordenacoes.QuickSortMediana3.Quick3MedioCaso;
+import Ordenacoes.QuickSortMediana3.Quick3MelhorCaso;
+import Ordenacoes.QuickSortMediana3.Quick3PiorCaso;
+
 import java.io.*;
 
 public class OrdenacaoPorMesCrescente {
@@ -11,6 +15,9 @@ public class OrdenacaoPorMesCrescente {
     static long TempoTotalMergeMelhorCaso = 0;
     static long TempoTotalMergeMedioCaso = 0;
     static long TempoTotalMergePiorCaso = 0;
+    static long TempoTotalQuickMedianaDe3MelhorCaso = 0;
+    static long TempoTotalQuickMedianaDe3PiorCaso = 0;
+    static long TempoTotalQuickMedianaDe3MedioCaso = 0;
 
     public static void Ordenacao(String[] args) {
         // Caminhos dos arquivos CSV
@@ -23,7 +30,7 @@ public class OrdenacaoPorMesCrescente {
         String SaidaMergePiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_piorCaso.csv";
 
         // Counting Sort - Melhor Caso
-        try {
+        /*try {
             long Inicio = System.nanoTime();
             CountingMelhorCaso.countingSortCSVDataMes(EntradaCSV, SaidaCountingMelhorCaso);
             long Fim = System.nanoTime();
@@ -86,16 +93,54 @@ public class OrdenacaoPorMesCrescente {
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMergePiorCaso);
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo com Merge Sort (Pior Caso): " + e.getMessage());
+        }*/
+
+        // Quick Sort mediana de 3 - Melhor Caso
+        String SaidaQuickMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSortmedianade3_melhorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            Quick3MelhorCaso.QuickSort3CSVMes(EntradaCSV, SaidaQuickMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3MelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Melhor Caso): " + e.getMessage());
         }
+        // Quick Sort mediana de 3 - Médio Caso
+        String SaidaQuickMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSortmedianade3_medioCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            Quick3MedioCaso.QuickSort3CSVMes(EntradaCSV, SaidaQuickMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3MedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Médio Caso): " + e.getMessage());
+        }
+        // Quick Sort mediana de 3 - Pior Caso
+        String SaidaQuickPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSortmedianade3_piorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            Quick3PiorCaso.QuickSort3CSVMes(EntradaCSV, SaidaQuickPiorCaso,2);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedianaDe3PiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Pior Caso): " + e.getMessage());
+        }
+
     }
 
     public static void TempoDeExecucao() {
-        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna mês: \n" +
+        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna mês: \n" +/*
             "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
             "Counting Sort Médio Caso: " + TempoTotalCountingMedioCaso + " ns\n" +
             "Counting Sort Pior Caso: " + TempoTotalCountingPiorCaso + " ns\n" +
             "Merge Sort Melhor Caso: " + TempoTotalMergeMelhorCaso + " ns\n" +
             "Merge Sort Médio Caso: " + TempoTotalMergeMedioCaso + " ns\n" +
-            "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n");
+            "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +*/
+            "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
+            "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
+            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n");
     }
 }
