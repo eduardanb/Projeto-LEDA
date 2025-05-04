@@ -2,17 +2,23 @@ package Ordenacoes.CountingSort;
 
 import java.io.*;
 import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class CountingMelhorCaso {
 
-    // Método para ordenar por mês no melhor caso
-    public static void countingSortCSVDataMes(String inputFilePath, String outputFilePath) throws IOException {
+    // Método para ordenar por comprimento no melhor caso
+    public static void CountingSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
+        processCSV(inputFilePath, outputFilePath, 2); // Coluna 2 = comprimento
+    }
+
+    // Método para ordenar por data no melhor caso
+    public static void CountingSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
         List<String[]> rows = new ArrayList<>();
         String[] header = null;
 
-        // Ler o arquivo CSV
+        // Leitura do arquivo CSV
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
             boolean isFirstLine = true;
@@ -26,194 +32,130 @@ public class CountingMelhorCaso {
             }
         }
 
-        // Extrair a coluna "mês" (ajuste o índice conforme necessário)
         int n = rows.size();
-        int[] months = new int[n];
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        long max = Long.MIN_VALUE;
         for (int i = 0; i < n; i++) {
-            months[i] = Integer.parseInt(rows.get(i)[1]); // Supondo que o mês está na coluna 1
-        }
-
-        // Ordenar os meses em ordem crescente (melhor caso)
-        Arrays.sort(months);
-
-        // Reorganizar as linhas do CSV com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int month : months) {
-            for (String[] row : rows) {
-                if (Integer.parseInt(row[1]) == month) {
-                    sortedRows.add(row);
-                    rows.remove(row);
-                    break;
-                }
+            indices[i] = i;
+            try {
+                String dataStr = rows.get(i)[3]; // Coluna de data
+                LocalDate data = LocalDate.parse(dataStr, formatter);
+                values[i] = data.toEpochDay();
+                if (values[i] > max) max = values[i];
+            } catch (DateTimeParseException e) {
+                System.err.println("Erro na linha " + (i + 2) + ": " + rows.get(i)[3]);
+                values[i] = 0; // Valor padrão para datas inválidas
             }
         }
 
-        // Escrever o arquivo CSV ordenado
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
+        indices = countingSort(values, indices, max);
+
+        writeCSV(outputFilePath, header, rows, indices);
     }
 
-    public static void countingSortCSVlength(String inputFilePath, String outputFilePath, int max) throws IOException {
+    // Método para ordenar por mês no melhor caso
+    public static void CountingSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
         List<String[]> rows = new ArrayList<>();
-        String[] header = null; // Para armazenar os cabeçalhos
+        String[] header = null;
+
+        // Leitura do arquivo CSV
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
             boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
-                    header = line.split(","); // Armazena os cabeçalhos
+                    header = line.split(",");
                     isFirstLine = false;
-                    continue; // Pula a primeira linha
+                    continue;
                 }
                 rows.add(line.split(","));
             }
         }
-    
-        // Extrair a coluna "length" e calcular o valor máximo dinamicamente
+
         int n = rows.size();
-        int[] lengths = new int[n];
-        int dynamicMax = 0; // Valor máximo dinâmico
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+
+        long max = 12; // Máximo valor para o mês (1 a 12)
         for (int i = 0; i < n; i++) {
+            indices[i] = i;
             try {
-                // Tenta converter o valor para inteiro
-                lengths[i] = (int) Double.parseDouble(rows.get(i)[2]); // Ajuste o índice da coluna para 2
-                if (lengths[i] > dynamicMax) {
-                    dynamicMax = lengths[i]; // Atualiza o valor máximo
+                String dataStr = rows.get(i)[3]; // Coluna de data
+                String[] partes = dataStr.split("/");
+                if (partes.length < 2) throw new IllegalArgumentException("Formato de data inválido");
+                values[i] = Long.parseLong(partes[1]); // Extrai o mês
+            } catch (Exception e) {
+                System.err.println("Erro na linha " + (i + 2) + ": " + rows.get(i)[3]);
+                values[i] = 0; // Valor padrão para meses inválidos
+            }
+        }
+
+        indices = countingSort(values, indices, max);
+
+        writeCSV(outputFilePath, header, rows, indices);
+    }
+
+    // Processa o CSV para uma coluna específica
+    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
                 }
+                rows.add(line.split(","));
+            }
+        }
+
+        int n = rows.size();
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+
+        long max = Long.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
+                if (values[i] > max) max = values[i];
             } catch (NumberFormatException e) {
-                // Trata valores inválidos
-                System.err.println("Valor inválido encontrado na linha " + (i + 1) + ": " + rows.get(i)[2]);
-                lengths[i] = 0; // Define um valor padrão ou trate conforme necessário
+                System.err.println("Valor inválido na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                values[i] = 0; // Valor padrão para valores inválidos
             }
         }
-    
-        // Atualizar o valor de max com o valor máximo dinâmico
-        max = dynamicMax;
-    
-        // Aplicar Counting Sort na coluna "length"
-        int[] outputIndices = countingSort(lengths, max);
-    
-        // Reorganizar as linhas do CSV com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : outputIndices) {
-            sortedRows.add(rows.get(index));
-        }
-    
-        // Escrever o arquivo CSV ordenado
+
+        indices = countingSort(values, indices, max);
+
+        writeCSV(outputFilePath, header, rows, indices);
+    }
+
+    // Escreve o CSV ordenado
+    private static void writeCSV(String outputFilePath, String[] header, List<String[]> rows, Integer[] indices) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            // Escrever os cabeçalhos primeiro
             if (header != null) {
                 bw.write(String.join(",", header));
                 bw.newLine();
             }
-            // Escrever as linhas ordenadas
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
+            for (int index : indices) {
+                bw.write(String.join(",", rows.get(index)));
                 bw.newLine();
             }
         }
     }
 
-    public static void countingSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null; // Para armazenar os cabeçalhos
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(","); // Armazena os cabeçalhos
-                    isFirstLine = false;
-                    continue; // Pula a primeira linha
-                }
-                rows.add(line.split(","));
-            }
-        }
-
-        // Extrair a coluna "Data" e converter para timestamps
-        int n = rows.size();
-        long[] timestamps = new long[n];
-        long maxTimestamp = Long.MIN_VALUE; // Valor máximo dinâmico
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        for (int i = 0; i < n; i++) {
-            try {
-                // Converte a data para timestamp
-                timestamps[i] = dateFormat.parse(rows.get(i)[3]).getTime(); // Índice 3 para a coluna "Data"
-                if (timestamps[i] > maxTimestamp) {
-                    maxTimestamp = timestamps[i]; // Atualiza o valor máximo
-                }
-            } catch (ParseException e) {
-                // Trata valores inválidos
-                System.err.println("Data inválida encontrada na linha " + (i + 1) + ": " + rows.get(i)[3]);
-                timestamps[i] = 0; // Define um valor padrão ou trate conforme necessário
-            }
-        }
-
-        // Aplicar Counting Sort na coluna "Data" (convertida para timestamps)
-        int[] outputIndices = countingSort(timestamps, maxTimestamp);
-
-        // Reorganizar as linhas do CSV com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : outputIndices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        // Escrever o arquivo CSV ordenado
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            // Escrever os cabeçalhos primeiro
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            // Escrever as linhas ordenadas
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
-    }
-    
-    private static int[] countingSort(int[] arr, int max) {
+    // Implementação do Counting Sort
+    private static Integer[] countingSort(long[] arr, Integer[] indices, long max) {
         int n = arr.length;
-        int[] output = new int[n]; // Índices ordenados
-        int[] count = new int[max + 1]; // Array de contagem
-    
-        // Inicializar o array de contagem
-        for (int i = 0; i <= max; i++) {
-            count[i] = 0;
-        }
-    
-        // Contar ocorrências
-        for (int i = 0; i < n; i++) {
-            count[arr[i]]++;
-        }
-    
-        // Ajustar o array de contagem
-        for (int i = 1; i <= max; i++) {
-            count[i] += count[i - 1];
-        }
-    
-        // Construir o array de saída
-        for (int i = n - 1; i >= 0; i--) {
-            output[count[arr[i]] - 1] = i; // Armazena o índice original
-            count[arr[i]]--;
-        }
-    
-        return output;
-    }
-
-    private static int[] countingSort(long[] arr, long max) {
-        int n = arr.length;
-        int[] output = new int[n]; // Índices ordenados
+        Integer[] output = new Integer[n]; // Índices ordenados
 
         // Verifica se o valor de max é válido
         if (max > Integer.MAX_VALUE) {
@@ -237,8 +179,7 @@ public class CountingMelhorCaso {
 
         // Construir o array de saída
         for (int i = n - 1; i >= 0; i--) {
-            output[count[(int) arr[i]] - 1] = i; // Armazena o índice original
-            count[(int) arr[i]]--;
+            output[--count[(int) arr[i]]] = indices[i];
         }
 
         return output;

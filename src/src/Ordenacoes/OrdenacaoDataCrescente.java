@@ -20,6 +20,11 @@ public class OrdenacaoDataCrescente {
     static long TempoTotalQuickMedianaDe3MelhorCaso = 0;
     static long TempoTotalQuickMedianaDe3PiorCaso = 0;
     static long TempoTotalQuickMedianaDe3MedioCaso = 0;
+    static long TempoTotalSelectionMelhorCaso = 0;
+    static long TempoTotalSelectionPiorCaso = 0;
+    static long TempoTotalSelectionMedioCaso = 0;
+
+
     public static void Ordenacao(String[] args) {
         // Exemplo de uso do Counting Sort para ordenar um arquivo CSV pela coluna "length"
         String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
@@ -28,10 +33,10 @@ public class OrdenacaoDataCrescente {
         String SaidaMelhorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_melhorCaso.csv"; 
         int max = 100; // Substitua pelo valor máximo esperado na coluna "length"
 
-        /*try {
+        try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingMedioCaso.countingSortCSVData(EntradaCSV, SaidaMedioCasoCounting);
+            CountingMedioCaso.CountingSortCSVData(EntradaCSV, SaidaMedioCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingMedioCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMedioCasoCounting);
@@ -41,7 +46,7 @@ public class OrdenacaoDataCrescente {
         try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingPiorCaso.countingSortCSVData(EntradaCSV, SaidaPiorCasoCounting);
+            CountingPiorCaso.CountingSortCSVData(EntradaCSV, SaidaPiorCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingPiorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaPiorCasoCounting);
@@ -51,7 +56,7 @@ public class OrdenacaoDataCrescente {
         try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingMelhorCaso.countingSortCSVData(EntradaCSV, SaidaMelhorCasoCounting);
+            CountingMelhorCaso.CountingSortCSVData(EntradaCSV, SaidaMelhorCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoCounting);
@@ -59,7 +64,45 @@ public class OrdenacaoDataCrescente {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
 
-        // Exemplo de uso do Merge Sort para ordenar um arquivo CSV pela coluna "length"
+        // Selection Sort - Melhor Caso
+        String SaidaSelectionMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_selectionSort_melhorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionMelhorCaso.SelectionCSVData(EntradaCSV, SaidaSelectionMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        // Selection Sort - Pior Caso
+        String SaidaSelectionPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_selectionSort_piorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionPiorCaso.SelectionCSVData(EntradaCSV, SaidaSelectionPiorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        // Selection Sort - Médio Caso
+        String SaidaSelectionMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_selectionSort_medioCaso.csv";
+        try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionMedioCaso.SelectionCSVData(EntradaCSV, SaidaSelectionMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        
+
+        /*  Exemplo de uso do Merge Sort para ordenar um arquivo CSV pela coluna "length"
         String SaidaMedioCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_medioCaso.csv";
         String SaidaPiorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_piorCaso.csv";
         String SaidaMelhorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_melhorCaso.csv";
@@ -142,6 +185,9 @@ public class OrdenacaoDataCrescente {
             "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n"+
             "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
             "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
-            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n");
+            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n" +
+            "Selection Sort Melhor Caso: " + TempoTotalSelectionMelhorCaso + " ns\n" +
+            "Selection Sort Pior Caso: " + TempoTotalSelectionPiorCaso + " ns\n" +
+            "Selection Sort Medio Caso: " + TempoTotalSelectionMedioCaso + " ns\n");
     }
 }

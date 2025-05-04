@@ -5,34 +5,40 @@ import Ordenacoes.MergeSort.*;
 import Ordenacoes.QuickSortMediana3.Quick3MedioCaso;
 import Ordenacoes.QuickSortMediana3.Quick3MelhorCaso;
 import Ordenacoes.QuickSortMediana3.Quick3PiorCaso;
+import Ordenacoes.SelectionSort.SelectionMedioCaso;
+import Ordenacoes.SelectionSort.SelectionMelhorCaso;
+import Ordenacoes.SelectionSort.SelectionPiorCaso;
 
 import java.io.*;
 
 public class OrdenacaoPorMesCrescente {
-    static long TempoTotalCountingMelhorCaso = 0;
     static long TempoTotalCountingMedioCaso = 0;
     static long TempoTotalCountingPiorCaso = 0;
+    static long TempoTotalCountingMelhorCaso = 0;
     static long TempoTotalMergeMelhorCaso = 0;
-    static long TempoTotalMergeMedioCaso = 0;
     static long TempoTotalMergePiorCaso = 0;
+    static long TempoTotalMergeMedioCaso = 0;
     static long TempoTotalQuickMedianaDe3MelhorCaso = 0;
     static long TempoTotalQuickMedianaDe3PiorCaso = 0;
     static long TempoTotalQuickMedianaDe3MedioCaso = 0;
+    static long TempoTotalSelectionMelhorCaso = 0;
+    static long TempoTotalSelectionPiorCaso = 0;
+    static long TempoTotalSelectionMedioCaso = 0;
 
     public static void Ordenacao(String[] args) {
         // Caminhos dos arquivos CSV
         String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
-        String SaidaCountingMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_mesCrescente_melhorCaso.csv";
-        String SaidaCountingMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_mesCrescente_medioCaso.csv";
-        String SaidaCountingPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_mesCrescente_piorCaso.csv";
+        String SaidaCountingMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_melhorCaso.csv";
+        String SaidaCountingMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_medioCaso.csv";
+        String SaidaCountingPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_piorCaso.csv";
         String SaidaMergeMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_melhorCaso.csv";
         String SaidaMergeMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_medioCaso.csv";
         String SaidaMergePiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_piorCaso.csv";
 
         // Counting Sort - Melhor Caso
-        /*try {
+        try {
             long Inicio = System.nanoTime();
-            CountingMelhorCaso.countingSortCSVDataMes(EntradaCSV, SaidaCountingMelhorCaso);
+            CountingMelhorCaso.CountingSortCSVMes(EntradaCSV, SaidaCountingMelhorCaso);
             long Fim = System.nanoTime();
             TempoTotalCountingMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaCountingMelhorCaso);
@@ -43,7 +49,7 @@ public class OrdenacaoPorMesCrescente {
         // Counting Sort - Médio Caso
         try {
             long Inicio = System.nanoTime();
-            CountingMedioCaso.countingSortCSVData(EntradaCSV, SaidaCountingMedioCaso);
+            CountingMedioCaso.CountingSortCSVMes(EntradaCSV, SaidaCountingMedioCaso);
             long Fim = System.nanoTime();
             TempoTotalCountingMedioCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaCountingMedioCaso);
@@ -54,7 +60,7 @@ public class OrdenacaoPorMesCrescente {
         // Counting Sort - Pior Caso
         try {
             long Inicio = System.nanoTime();
-            CountingPiorCaso.countingSortCSVData(EntradaCSV, SaidaCountingPiorCaso);
+            CountingPiorCaso.CountingSortCSVMes(EntradaCSV, SaidaCountingPiorCaso);
             long Fim = System.nanoTime();
             TempoTotalCountingPiorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaCountingPiorCaso);
@@ -62,7 +68,7 @@ public class OrdenacaoPorMesCrescente {
             System.err.println("Erro ao processar o arquivo com Counting Sort (Pior Caso): " + e.getMessage());
         }
 
-        // Merge Sort - Melhor Caso
+        /*  Merge Sort - Melhor Caso
         try {
             long Inicio = System.nanoTime();
             MergeMelhorCaso.mergeSortCSVDataMes(EntradaCSV, SaidaMergeMelhorCaso);
@@ -128,19 +134,58 @@ public class OrdenacaoPorMesCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo com Quick Sort (Pior Caso): " + e.getMessage());
         }
-
+        
+         
+         // Selection Sort - Melhor Caso
+         String SaidaSelectionMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_selectionSort_melhorCaso.csv";
+         try {
+            long Inicio = System.nanoTime();
+            SelectionMelhorCaso.SelectionCSVMes(EntradaCSV, SaidaSelectionMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Selection Sort (Melhor Caso): " + e.getMessage());
+        }
+        // Selection Sort - Médio Caso
+        String SaidaSelectionMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_selectionSort_medioCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            SelectionMedioCaso.SelectionCSVMes(EntradaCSV, SaidaSelectionMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Selection Sort (Médio Caso): " + e.getMessage());
+        }
+        // Selection Sort - Pior Caso
+        String SaidaSelectionPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_selectionSort_piorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            SelectionPiorCaso.SelectionCSVMes(EntradaCSV, SaidaSelectionPiorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaSelectionPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Selection Sort (Pior Caso): " + e.getMessage());
+        }
+        
+        
     }
-
+    
     public static void TempoDeExecucao() {
-        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna mês: \n" +/*
-            "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
-            "Counting Sort Médio Caso: " + TempoTotalCountingMedioCaso + " ns\n" +
+        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna data: \n" +
+            "Counting Sort Medio Caso: " + TempoTotalCountingMedioCaso + " ns\n" +
             "Counting Sort Pior Caso: " + TempoTotalCountingPiorCaso + " ns\n" +
+            "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
             "Merge Sort Melhor Caso: " + TempoTotalMergeMelhorCaso + " ns\n" +
-            "Merge Sort Médio Caso: " + TempoTotalMergeMedioCaso + " ns\n" +
-            "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +*/
+            "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +
+            "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n"+
             "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
             "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
-            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n");
+            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n" +
+            "Selection Sort Melhor Caso: " + TempoTotalSelectionMelhorCaso + " ns\n" +
+            "Selection Sort Pior Caso: " + TempoTotalSelectionPiorCaso + " ns\n" +
+            "Selection Sort Medio Caso: " + TempoTotalSelectionMedioCaso + " ns\n");
     }
 }

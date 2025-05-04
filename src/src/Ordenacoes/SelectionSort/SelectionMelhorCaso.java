@@ -1,78 +1,216 @@
 package Ordenacoes.SelectionSort;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SelectionMelhorCaso {
 
-    // Método para ordenar pelo campo "Tamanho" (length) em ordem decrescente
-    public static void ordenarPorLength(String[] senhas) {
-        // Como é o melhor caso, assumimos que os dados já estão ordenados
-        System.out.println("Os dados já estão ordenados por Tamanho em ordem decrescente.");
+    public static void SelectionCSVLength(String inputFilePath, String outputFilePath) throws IOException {
+        processCSV(inputFilePath, outputFilePath, 2); // coluna 2 = length
     }
 
-    // Método para ordenar pelo mês da coluna "Data" em ordem crescente
-    public static void ordenarPorMes(String[] senhas) {
-        // Como é o melhor caso, assumimos que os dados já estão ordenados
-        System.out.println("Os dados já estão ordenados por Mês em ordem crescente.");
-    }
+    public static void SelectionCSVData(String inputFilePath, String outputFilePath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
 
-    // Método para ordenar pela coluna "Data" completa em ordem crescente
-    public static void ordenarPorData(String[] senhas) {
-        // Como é o melhor caso, assumimos que os dados já estão ordenados
-        System.out.println("Os dados já estão ordenados por Data em ordem crescente.");
-    }
-
-    // Método principal para executar as ordenações
-    public static void main(String[] args) {
-        String caminhoEntrada = "src/ArquivosCSV/passwords_formated_data.csv";
-
-        // Lê o arquivo de entrada
-        String[] senhas = lerCsv(caminhoEntrada);
-
-        // Ordenar por Tamanho (length) em ordem decrescente
-        ordenarPorLength(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_length_selectionSort_melhorCaso.csv");
-
-        // Ordenar por Mês em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorMes(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_month_selectionSort_melhorCaso.csv");
-
-        // Ordenar por Data completa em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorData(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_selectionSort_melhorCaso.csv");
-    }
-
-    // Método para ler o arquivo CSV
-    public static String[] lerCsv(String caminhoArquivo) {
-        String[] linhas = null;
-        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
-            String linha;
-            int totalLinhas = (int) leitor.lines().count(); // Conta o número de linhas
-            leitor.close(); // Fecha e reabre para reiniciar a leitura
-            BufferedReader leitor2 = new BufferedReader(new FileReader(caminhoArquivo));
-            linhas = new String[totalLinhas];
-            int index = 0;
-            while ((linha = leitor2.readLine()) != null) {
-                linhas[index++] = linha;
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
             }
-            leitor2.close();
-        } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo: " + e.getMessage());
         }
-        return linhas;
+
+        int n = rows.size();
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Converter a data para número de dias desde 1970
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                String dataStr = rows.get(i)[3]; // Coluna de data (índice 3)
+                LocalDate data = LocalDate.parse(dataStr, formatter);
+                values[i] = data.toEpochDay();
+            } catch (DateTimeParseException e) {
+                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[3]);
+                values[i] = Long.MIN_VALUE;
+            }
+        }
+
+        // Ordenar com SelectionSort
+        selectionSort(values, indices);
+
+        // Reorganizar linhas
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : indices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escrever o CSV de saída
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            if (header != null) {
+                bw.write(String.join(",", header));
+                bw.newLine();
+            }
+            for (String[] row : sortedRows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        }
     }
 
-    // Método para escrever o arquivo CSV
-    public static void escreverCsv(String[] linhas, String caminhoArquivo) {
-        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            for (String linha : linhas) {
-                escritor.write(linha);
-                escritor.newLine();
+    public static void SelectionCSVMes(String inputFilePath, String outputFilePath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
             }
-        } catch (IOException e) {
-            System.out.println("Erro ao escrever o arquivo: " + e.getMessage());
+        }
+
+        int n = rows.size();
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+
+        // Extrair o mês da coluna de data e associar com os índices
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                String dataStr = rows.get(i)[3]; // Coluna de data (índice 3)
+                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                    throw new IllegalArgumentException("Formato de data inválido");
+                }
+                String[] partes = dataStr.split("/");
+                values[i] = Long.parseLong(partes[1]); // Extrai o mês (parte [1] da data dd/MM/yyyy)
+            } catch (Exception e) {
+                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[3]);
+                values[i] = 0; // Valor padrão em caso de erro
+            }
+        }
+
+        // Ordena os índices com base nos valores (mês) usando SelectionSort
+        selectionSort(values, indices);
+
+        // Reorganiza as linhas conforme os índices ordenados
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : indices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escreve o CSV ordenado
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            if (header != null) {
+                bw.write(String.join(",", header));
+                bw.newLine();
+            }
+            for (String[] row : sortedRows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        }
+    }
+
+    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        // Leitura do arquivo CSV
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                rows.add(line.split(","));
+            }
+        }
+
+        int n = rows.size();
+        long[] values = new long[n];
+        Integer[] indices = new Integer[n];
+
+        // Inicializa índices e captura os valores da coluna indicada
+        for (int i = 0; i < n; i++) {
+            indices[i] = i;
+            try {
+                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
+            } catch (NumberFormatException e) {
+                System.err.println("Valor inválido encontrado na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                values[i] = 0;
+            }
+        }
+
+        // Ordena os índices com base nos valores
+        selectionSort(values, indices);
+
+        // Reorganiza as linhas com base na ordenação
+        List<String[]> sortedRows = new ArrayList<>();
+        for (int index : indices) {
+            sortedRows.add(rows.get(index));
+        }
+
+        // Escreve o CSV ordenado
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            if (header != null) {
+                bw.write(String.join(",", header));
+                bw.newLine();
+            }
+            for (String[] row : sortedRows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        }
+    }
+
+    // Selection Sort otimizado para o melhor caso
+    private static void selectionSort(long[] values, Integer[] indices) {
+        int n = indices.length;
+        boolean swapped;
+        
+        for (int i = 0; i < n - 1; i++) {
+            swapped = false;
+            int minIndex = i;
+            
+            for (int j = i + 1; j < n; j++) {
+                if (values[indices[j]] < values[indices[minIndex]]) {
+                    minIndex = j;
+                    swapped = true;
+                }
+            }
+            
+            // Se não houve trocas, o array já está ordenado
+            if (!swapped) {
+                break;
+            }
+            
+            // Troca os índices
+            int temp = indices[minIndex];
+            indices[minIndex] = indices[i];
+            indices[i] = temp;
         }
     }
 }

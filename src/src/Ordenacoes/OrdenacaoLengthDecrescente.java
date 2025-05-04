@@ -22,6 +22,11 @@ public class OrdenacaoLengthDecrescente {
     static long TempoTotalQuickMedianaDe3MelhorCaso = 0;
     static long TempoTotalQuickMedianaDe3PiorCaso = 0;
     static long TempoTotalQuickMedianaDe3MedioCaso = 0;
+    static long TempoTotalSelectionMelhorCaso = 0;
+    static long TempoTotalSelectionPiorCaso = 0;
+    static long TempoTotalSelectionMedioCaso = 0;
+
+
     public static void Ordenacao(String[] args) {
         // Exemplo de uso do Counting Sort para ordenar um arquivo CSV pela coluna "length"
         String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
@@ -33,7 +38,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingMedioCaso.countingSortCSVlength(EntradaCSV, SaidaMedioCasoCounting, max);
+            CountingMedioCaso.CountingSortCSVLength(EntradaCSV, SaidaMedioCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingMedioCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMedioCasoCounting);
@@ -43,7 +48,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingPiorCaso.countingSortCSVlength(EntradaCSV, SaidaPiorCasoCounting, max);
+            CountingPiorCaso.CountingSortCSVLength(EntradaCSV, SaidaPiorCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingPiorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaPiorCasoCounting);
@@ -53,7 +58,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Counting Sort
             long Inicio = System.nanoTime();
-            CountingMelhorCaso.countingSortCSVlength(EntradaCSV, SaidaMelhorCasoCounting, max);
+            CountingMelhorCaso.CountingSortCSVLength(EntradaCSV, SaidaMelhorCasoCounting);
             long Fim = System.nanoTime();
             TempoTotalCountingMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoCounting);
@@ -68,7 +73,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Merge Sort
             long Inicio = System.nanoTime();
-            MergeMedioCaso.mergeSortCSV(EntradaCSV, SaidaMedioCasoMerge);
+            MergeMedioCaso.mergeSortCSVLength(EntradaCSV, SaidaMedioCasoMerge);
             long Fim = System.nanoTime();
             TempoTotalMergeMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMedioCasoMerge);
@@ -79,7 +84,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Merge Sort
             long Inicio = System.nanoTime();
-            MergePiorCaso.mergeSortCSVPiorCaso(EntradaCSV, SaidaPiorCasoMerge);
+            MergePiorCaso.mergeSortCSVLength(EntradaCSV, SaidaPiorCasoMerge);
             long Fim = System.nanoTime();
             TempoTotalMergeMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaPiorCasoMerge);
@@ -89,7 +94,7 @@ public class OrdenacaoLengthDecrescente {
         try {
             // Chamada para o método de ordenação Merge Sort
             long Inicio = System.nanoTime();
-            MergeMelhorCaso.mergeSortCSVBestCase(EntradaCSV, SaidaMelhorCasoMerge);
+            MergeMelhorCaso.mergeSortCSVLength(EntradaCSV, SaidaMelhorCasoMerge);
             long Fim = System.nanoTime();
             TempoTotalMergeMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoMerge);
@@ -132,18 +137,57 @@ public class OrdenacaoLengthDecrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+        System.out.println("Iniciando ordenação por SelectionSort...");
+         //Selection Sort
+         String SaidaMedioCasoSelection = "src\\ArquivosCSVOrdenados\\passwords_length_selectionSort_medioCaso.csv";
+         try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionMedioCaso.SelectionCSVLength(EntradaCSV, SaidaMedioCasoSelection);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMedioCasoSelection);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        String SaidaPiorCasoSelection = "src\\ArquivosCSVOrdenados\\passwords_length_selectionSort_piorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionPiorCaso.SelectionCSVLength(EntradaCSV, SaidaPiorCasoSelection);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaPiorCasoSelection);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        String SaidaMelhorCasoSelection = "src\\ArquivosCSVOrdenados\\passwords_length_selectionSort_melhorCaso.csv";
+        try {
+            // Chamada para o método de ordenação Selection Sort
+            long Inicio = System.nanoTime();
+            SelectionMelhorCaso.SelectionCSVLength(EntradaCSV, SaidaMelhorCasoSelection);
+            long Fim = System.nanoTime();
+            TempoTotalSelectionMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMelhorCasoSelection);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo: " + e.getMessage());
+        }
+        
     }
 
     public static void TempoDeExecucao() {
-        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna length: \n" +
+        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna data: \n" +
             "Counting Sort Medio Caso: " + TempoTotalCountingMedioCaso + " ns\n" +
             "Counting Sort Pior Caso: " + TempoTotalCountingPiorCaso + " ns\n" +
             "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
             "Merge Sort Melhor Caso: " + TempoTotalMergeMelhorCaso + " ns\n" +
             "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +
-            "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n" +
+            "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n"+
             "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
             "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
-            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n");
+            "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n" +
+            "Selection Sort Melhor Caso: " + TempoTotalSelectionMelhorCaso + " ns\n" +
+            "Selection Sort Pior Caso: " + TempoTotalSelectionPiorCaso + " ns\n" +
+            "Selection Sort Medio Caso: " + TempoTotalSelectionMedioCaso + " ns\n");
     }
 }
