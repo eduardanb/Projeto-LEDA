@@ -4,117 +4,126 @@ import java.io.*;
 
 public class InsectionPiorCaso {
 
-    // Método para ordenar pelo campo "Tamanho" (length) em ordem decrescente
-    public static void ordenarPorLength(String[] senhas) {
-        int n = senhas.length;
-        for (int i = 1; i < n; i++) {
-            String chave = senhas[i];
-            int tamanhoChave = Integer.parseInt(chave.split(",")[2]); // Obtém o tamanho da senha
+    public static void insertionSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
+        processCSV(inputFilePath, outputFilePath, 2, false); // Coluna 2 = length, ordem decrescente
+    }
+
+    public static void insertionSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithDate(inputFilePath, outputFilePath, 3, true); // Coluna 3 = data, ordem crescente
+    }
+
+    public static void insertionSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithMonth(inputFilePath, outputFilePath, 3, true); // Coluna 3 = mês extraído da data, ordem crescente
+    }
+
+    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex, boolean descending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
+
+        // Preparar os dados no pior caso
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            values[i] = Long.parseLong(rows[i][columnIndex]);
+            indices[i] = i;
+        }
+        prepareWorstCase(values, indices, descending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
+    }
+
+    private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
+
+        // Preparar os dados no pior caso
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            String[] dateParts = rows[i][columnIndex].split("/");
+            values[i] = Long.parseLong(dateParts[2] + dateParts[1] + dateParts[0]); // AnoMêsDia
+            indices[i] = i;
+        }
+        prepareWorstCase(values, indices, !ascending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
+    }
+
+    private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
+
+        // Preparar os dados no pior caso
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            String[] dateParts = rows[i][columnIndex].split("/");
+            values[i] = Long.parseLong(dateParts[1]); // Apenas o mês
+            indices[i] = i;
+        }
+        prepareWorstCase(values, indices, !ascending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
+    }
+
+    private static String[][] readCSV(String inputFilePath) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String[] lines = br.lines().toArray(String[]::new);
+            String[][] rows = new String[lines.length][];
+            for (int i = 0; i < lines.length; i++) {
+                rows[i] = lines[i].split(",");
+            }
+            return rows;
+        }
+    }
+
+    private static void prepareWorstCase(long[] values, int[] indices, boolean ascending) {
+        insertionSort(values, indices, ascending);
+    }
+
+    private static void insertionSort(long[] values, int[] indices, boolean ascending) {
+        for (int i = 1; i < values.length; i++) {
+            long key = values[i];
+            int keyIndex = indices[i];
             int j = i - 1;
 
-            // Move os elementos menores que a chave para uma posição à frente
-            while (j >= 0 && Integer.parseInt(senhas[j].split(",")[2]) < tamanhoChave) {
-                senhas[j + 1] = senhas[j];
+            while (j >= 0 && (ascending ? values[j] < key : values[j] > key)) {
+                values[j + 1] = values[j];
+                indices[j + 1] = indices[j];
                 j--;
             }
-            senhas[j + 1] = chave;
+            values[j + 1] = key;
+            indices[j + 1] = keyIndex;
         }
     }
 
-    // Método para ordenar pelo mês da coluna "Data" em ordem crescente
-    public static void ordenarPorMes(String[] senhas) {
-        int n = senhas.length;
-        for (int i = 1; i < n; i++) {
-            String chave = senhas[i];
-            int mesChave = Integer.parseInt(chave.split(",")[3].split("/")[1]); // Obtém o mês
-            int j = i - 1;
-
-            // Move os elementos maiores que a chave para uma posição à frente
-            while (j >= 0 && Integer.parseInt(senhas[j].split(",")[3].split("/")[1]) > mesChave) {
-                senhas[j + 1] = senhas[j];
-                j--;
+    private static void writeCSV(String outputFilePath, String[][] rows) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            for (String[] row : rows) {
+                bw.write(String.join(",", row)); // Escreve cada linha
+                bw.newLine();
             }
-            senhas[j + 1] = chave;
-        }
-    }
-
-    // Método para ordenar pela coluna "Data" completa em ordem crescente
-    public static void ordenarPorData(String[] senhas) {
-        int n = senhas.length;
-        for (int i = 1; i < n; i++) {
-            String chave = senhas[i];
-            String[] dataChave = chave.split(",")[3].split("/"); // Obtém a data
-            int j = i - 1;
-
-            // Move os elementos maiores que a chave para uma posição à frente
-            while (j >= 0) {
-                String[] dataAtual = senhas[j].split(",")[3].split("/");
-                boolean maior = Integer.parseInt(dataAtual[2]) > Integer.parseInt(dataChave[2]) || // Ano
-                                (Integer.parseInt(dataAtual[2]) == Integer.parseInt(dataChave[2]) &&
-                                 Integer.parseInt(dataAtual[1]) > Integer.parseInt(dataChave[1])) || // Mês
-                                (Integer.parseInt(dataAtual[2]) == Integer.parseInt(dataChave[2]) &&
-                                 Integer.parseInt(dataAtual[1]) == Integer.parseInt(dataChave[1]) &&
-                                 Integer.parseInt(dataAtual[0]) > Integer.parseInt(dataChave[0])); // Dia
-                if (!maior) break;
-
-                senhas[j + 1] = senhas[j];
-                j--;
-            }
-            senhas[j + 1] = chave;
-        }
-    }
-
-    // Método principal para executar as ordenações
-    public static void main(String[] args) {
-        String caminhoEntrada = "src/ArquivosCSV/passwords_formated_data.csv";
-
-        // Lê o arquivo de entrada
-        String[] senhas = lerCsv(caminhoEntrada);
-
-        // Ordenar por Tamanho (length) em ordem decrescente
-        ordenarPorLength(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_length_insertionSort_piorCaso.csv");
-
-        // Ordenar por Mês em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorMes(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_month_insertionSort_piorCaso.csv");
-
-        // Ordenar por Data completa em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorData(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_insertionSort_piorCaso.csv");
-    }
-
-    // Método para ler o arquivo CSV
-    public static String[] lerCsv(String caminhoArquivo) {
-        String[] linhas = null;
-        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
-            String linha;
-            int totalLinhas = (int) leitor.lines().count(); // Conta o número de linhas
-            leitor.close(); // Fecha e reabre para reiniciar a leitura
-            BufferedReader leitor2 = new BufferedReader(new FileReader(caminhoArquivo));
-            linhas = new String[totalLinhas];
-            int index = 0;
-            while ((linha = leitor2.readLine()) != null) {
-                linhas[index++] = linha;
-            }
-            leitor2.close();
-        } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo: " + e.getMessage());
-        }
-        return linhas;
-    }
-
-    // Método para escrever o arquivo CSV
-    public static void escreverCsv(String[] linhas, String caminhoArquivo) {
-        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            for (String linha : linhas) {
-                escritor.write(linha);
-                escritor.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao escrever o arquivo: " + e.getMessage());
         }
     }
 }

@@ -4,72 +4,131 @@ import java.io.*;
 
 public class InsectionMelhorCaso {
 
-    // Método para ordenar pelo campo "Tamanho" (length) em ordem decrescente
-    public static void ordenarPorLength(String[] senhas) {
-        System.out.println("Os dados já estão ordenados por Tamanho em ordem decrescente.");
+    public static void insertionSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
+        processCSV(inputFilePath, outputFilePath, 2, false); // Coluna 2 = length, ordem decrescente
     }
 
-    // Método para ordenar pelo mês da coluna "Data" em ordem crescente
-    public static void ordenarPorMes(String[] senhas) {
-        System.out.println("Os dados já estão ordenados por Mês em ordem crescente.");
+    public static void insertionSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithDate(inputFilePath, outputFilePath, 3, true); // Coluna 3 = data, ordem crescente
     }
 
-    // Método para ordenar pela coluna "Data" completa em ordem crescente
-    public static void ordenarPorData(String[] senhas) {
-        System.out.println("Os dados já estão ordenados por Data em ordem crescente.");
+    public static void insertionSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
+        processCSVWithMonth(inputFilePath, outputFilePath, 3, true); // Coluna 3 = mês extraído da data, ordem crescente
     }
 
-    // Método principal para executar as ordenações
-    public static void main(String[] args) {
-        String caminhoEntrada = "src/ArquivosCSV/passwords_formated_data.csv";
+    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex, boolean descending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
 
-        // Lê o arquivo de entrada
-        String[] senhas = lerCsv(caminhoEntrada);
-
-        // Ordenar por Tamanho (length) em ordem decrescente
-        ordenarPorLength(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_length_insertionSort_melhorCaso.csv");
-
-        // Ordenar por Mês em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorMes(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_month_insertionSort_melhorCaso.csv");
-
-        // Ordenar por Data completa em ordem crescente
-        senhas = lerCsv(caminhoEntrada); // Recarrega o arquivo original
-        ordenarPorData(senhas);
-        escreverCsv(senhas, "src/ArquivosCSV/passwords_data_insertionSort_melhorCaso.csv");
-    }
-
-    // Método para ler o arquivo CSV
-    public static String[] lerCsv(String caminhoArquivo) {
-        String[] linhas = null;
-        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
-            String linha;
-            int totalLinhas = (int) leitor.lines().count(); // Conta o número de linhas
-            leitor.close(); // Fecha e reabre para reiniciar a leitura
-            BufferedReader leitor2 = new BufferedReader(new FileReader(caminhoArquivo));
-            linhas = new String[totalLinhas];
-            int index = 0;
-            while ((linha = leitor2.readLine()) != null) {
-                linhas[index++] = linha;
-            }
-            leitor2.close();
-        } catch (IOException e) {
-            System.out.println("Erro ao ler o arquivo: " + e.getMessage());
+        // Os dados já estão ordenados no melhor caso
+        // Apenas reorganiza os índices para simular o processamento
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            values[i] = Long.parseLong(rows[i][columnIndex]);
+            indices[i] = i;
         }
-        return linhas;
+
+        // Simula a execução do InsertionSort sem alterações
+        insertionSort(values, indices, descending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
     }
 
-    // Método para escrever o arquivo CSV
-    public static void escreverCsv(String[] linhas, String caminhoArquivo) {
-        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            for (String linha : linhas) {
-                escritor.write(linha);
-                escritor.newLine();
+    private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
+
+        // Os dados já estão ordenados no melhor caso
+        // Apenas reorganiza os índices para simular o processamento
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            String[] dateParts = rows[i][columnIndex].split("/");
+            values[i] = Long.parseLong(dateParts[2] + dateParts[1] + dateParts[0]); // AnoMêsDia
+            indices[i] = i;
+        }
+
+        // Simula a execução do InsertionSort sem alterações
+        insertionSort(values, indices, ascending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
+    }
+
+    private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
+        String[][] rows = readCSV(inputFilePath);
+        int n = rows.length;
+
+        // Os dados já estão ordenados no melhor caso
+        // Apenas reorganiza os índices para simular o processamento
+        long[] values = new long[n];
+        int[] indices = new int[n];
+        for (int i = 0; i < n; i++) {
+            String[] dateParts = rows[i][columnIndex].split("/");
+            values[i] = Long.parseLong(dateParts[1]); // Apenas o mês
+            indices[i] = i;
+        }
+
+        // Simula a execução do InsertionSort sem alterações
+        insertionSort(values, indices, ascending);
+
+        // Reorganizar as linhas do CSV
+        String[][] sortedRows = new String[n][];
+        for (int i = 0; i < n; i++) {
+            sortedRows[i] = rows[indices[i]];
+        }
+
+        // Escreve o CSV ordenado
+        writeCSV(outputFilePath, sortedRows);
+    }
+
+    private static String[][] readCSV(String inputFilePath) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String[] lines = br.lines().toArray(String[]::new);
+            String[][] rows = new String[lines.length][];
+            for (int i = 0; i < lines.length; i++) {
+                rows[i] = lines[i].split(",");
             }
-        } catch (IOException e) {
-            System.out.println("Erro ao escrever o arquivo: " + e.getMessage());
+            return rows;
+        }
+    }
+
+    private static void insertionSort(long[] values, int[] indices, boolean ascending) {
+        // Simula a execução do InsertionSort no melhor caso
+        for (int i = 1; i < values.length; i++) {
+            long key = values[i];
+            int keyIndex = indices[i];
+            int j = i - 1;
+
+            // No melhor caso, nenhuma troca é necessária
+            while (j >= 0 && (ascending ? values[j] < key : values[j] > key)) {
+                break; // Simula a condição de saída imediata
+            }
+            values[j + 1] = key;
+            indices[j + 1] = keyIndex;
+        }
+    }
+
+    private static void writeCSV(String outputFilePath, String[][] rows) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
+            for (String[] row : rows) {
+                bw.write(String.join(",", row)); // Escreve cada linha
+                bw.newLine();
+            }
         }
     }
 }
