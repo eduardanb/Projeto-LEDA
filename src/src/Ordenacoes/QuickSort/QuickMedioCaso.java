@@ -3,167 +3,127 @@ package Ordenacoes.QuickSort;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class QuickMedioCaso {
 
     public static void quickSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2); // Coluna 2 = length
+        processCSVByLong(inputFilePath, outputFilePath, 2, QuickMedioCaso::parseLongFromColumn);
     }
 
     public static void quickSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithDate(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+        processCSVByLong(inputFilePath, outputFilePath, 3, QuickMedioCaso::parseEpochDayFromDate);
     }
 
     public static void quickSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithMonth(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+        processCSVByLong(inputFilePath, outputFilePath, 3, QuickMedioCaso::parseMonthFromDate);
     }
 
-    private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
-
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
+    // Método genérico
+    private static void processCSVByLong(String inputFilePath, String outputFilePath, int columnIndex,
+                                         ValueExtractor extractor) throws IOException {
+        CSVContent csv = readCSV(inputFilePath);
+        List<String[]> rows = csv.rows;
+        String[] header = csv.header;
 
         int n = rows.size();
         long[] values = new long[n];
         Integer[] indices = new Integer[n];
 
-        // Inicializa índices e captura os valores da coluna indicada
         for (int i = 0; i < n; i++) {
             indices[i] = i;
             try {
-                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
-            } catch (NumberFormatException e) {
-                System.err.println("Valor inválido encontrado na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = 0;
-            }
-        }
-
-        // Ordena os índices com base nos valores
-        quickSortWithIndices(values, indices, 0, n - 1);
-
-        // Reorganiza as linhas com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : indices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, header, sortedRows);
-    }
-
-    private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
-
-        int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-
-        // Converter a data para número de dias desde 1970
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
-            try {
-                String dataStr = rows.get(i)[columnIndex];
-                LocalDate data = LocalDate.parse(dataStr, formatter);
-                values[i] = data.toEpochDay();
-            } catch (DateTimeParseException e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = Long.MIN_VALUE;
-            }
-        }
-
-        // Ordena os índices com base nos valores
-        quickSortWithIndices(values, indices, 0, n - 1);
-
-        // Reorganiza as linhas com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : indices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, header, sortedRows);
-    }
-
-    private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
-
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
-
-        int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-
-        // Extrair o mês da coluna de data
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
-            try {
-                String dataStr = rows.get(i)[columnIndex];
-                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                    throw new IllegalArgumentException("Formato de data inválido");
-                }
-                String[] partes = dataStr.split("/");
-                values[i] = Long.parseLong(partes[1]); // Extrai o mês
+                values[i] = extractor.extract(rows.get(i)[columnIndex], i + 2); // +2 por causa do header
             } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
+                System.err.println("Erro na linha " + (i + 2) + ": " + e.getMessage());
                 values[i] = 0;
             }
         }
 
-        // Ordena os índices com base nos valores
         quickSortWithIndices(values, indices, 0, n - 1);
 
-        // Reorganiza as linhas com base na ordenação
         List<String[]> sortedRows = new ArrayList<>();
         for (int index : indices) {
             sortedRows.add(rows.get(index));
         }
 
-        // Escreve o CSV ordenado
         writeCSV(outputFilePath, header, sortedRows);
+    }
+
+    // Interface funcional
+    @FunctionalInterface
+    interface ValueExtractor {
+        long extract(String data, int rowIndex) throws Exception;
+    }
+
+    private static long parseLongFromColumn(String value, int rowIndex) throws NumberFormatException {
+        return Long.parseLong(value);
+    }
+
+    private static long parseEpochDayFromDate(String dateStr, int rowIndex) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(dateStr, formatter);
+        return date.toEpochDay();
+    }
+
+    private static long parseMonthFromDate(String dateStr, int rowIndex) {
+        if (!dateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            throw new IllegalArgumentException("Formato de data inválido");
+        }
+        String[] parts = dateStr.split("/");
+        return Long.parseLong(parts[1]); // mês
+    }
+
+    private static void quickSortWithIndices(long[] values, Integer[] indices, int low, int high) {
+        if (low >= high || low < 0 || high >= indices.length) {
+            return;
+        }
+
+        int pivotIndex = partition(values, indices, low, high);
+
+        quickSortWithIndices(values, indices, low, pivotIndex - 1);
+        quickSortWithIndices(values, indices, pivotIndex + 1, high);
+    }
+
+    private static int partition(long[] values, Integer[] indices, int low, int high) {
+        long pivot = values[indices[high]];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (values[indices[j]] <= pivot) {
+                i++;
+                swap(indices, i, j);
+            }
+        }
+        swap(indices, i + 1, high);
+        return i + 1;
+    }
+
+    private static void swap(Integer[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    // Leitura do CSV
+    private static CSVContent readCSV(String inputFilePath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        String[] header = null;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    header = line.split(",");
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(",");
+                rows.add(parts);
+            }
+        }
+
+        return new CSVContent(header, rows);
     }
 
     private static void writeCSV(String outputFilePath, String[] header, List<String[]> rows) throws IOException {
@@ -179,32 +139,14 @@ public class QuickMedioCaso {
         }
     }
 
-    private static void quickSortWithIndices(long[] values, Integer[] indices, int low, int high) {
-        if (low < high) {
-            int pivotIndex = partition(values, indices, low, high);
-            quickSortWithIndices(values, indices, low, pivotIndex - 1);
-            quickSortWithIndices(values, indices, pivotIndex + 1, high);
+    // Classe auxiliar
+    private static class CSVContent {
+        String[] header;
+        List<String[]> rows;
+
+        CSVContent(String[] header, List<String[]> rows) {
+            this.header = header;
+            this.rows = rows;
         }
-    }
-
-    private static int partition(long[] values, Integer[] indices, int low, int high) {
-        long pivot = values[indices[high]];
-        int i = low - 1;
-
-        for (int j = low; j < high; j++) {
-            if (values[indices[j]] <= pivot) { // Ordenação crescente
-                i++;
-                swap(indices, i, j);
-            }
-        }
-
-        swap(indices, i + 1, high);
-        return i + 1;
-    }
-
-    private static void swap(Integer[] array, int i, int j) {
-        int temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
     }
 }

@@ -1,7 +1,16 @@
 package Ordenacoes;
 
 import Ordenacoes.CountingSort.*;
+import Ordenacoes.HeapSort.HeapMedioCaso;
+import Ordenacoes.HeapSort.HeapMelhorCaso;
+import Ordenacoes.HeapSort.HeapPiorCaso;
+import Ordenacoes.InsectionSort.InsectionMedioCaso;
+import Ordenacoes.InsectionSort.InsectionMelhorCaso;
+import Ordenacoes.InsectionSort.InsectionPiorCaso;
 import Ordenacoes.MergeSort.*;
+import Ordenacoes.QuickSort.QuickMedioCaso;
+import Ordenacoes.QuickSort.QuickMelhorCaso;
+import Ordenacoes.QuickSort.QuickPiorCaso;
 import Ordenacoes.QuickSortMediana3.Quick3MedioCaso;
 import Ordenacoes.QuickSortMediana3.Quick3MelhorCaso;
 import Ordenacoes.QuickSortMediana3.Quick3PiorCaso;
@@ -24,6 +33,15 @@ public class OrdenacaoPorMesCrescente {
     static long TempoTotalSelectionMelhorCaso = 0;
     static long TempoTotalSelectionPiorCaso = 0;
     static long TempoTotalSelectionMedioCaso = 0;
+    static long TempoTotalQuickMelhorCaso = 0;
+    static long TempoTotalQuickPiorCaso = 0;
+    static long TempoTotalQuickMedioCaso = 0;
+    static long TempoTotalHeapSortMelhorCaso = 0;
+    static long TempoTotalHeapSortPiorCaso = 0;
+    static long TempoTotalHeapSortMedioCaso = 0;
+    static long TempoTotalInsectionSortMelhorCaso = 0;
+    static long TempoTotalInsectionSortPiorCaso = 0;
+    static long TempoTotalInsectionSortMedioCaso = 0;
 
     public static void Ordenacao(String[] args) {
         // Caminhos dos arquivos CSV
@@ -68,10 +86,10 @@ public class OrdenacaoPorMesCrescente {
             System.err.println("Erro ao processar o arquivo com Counting Sort (Pior Caso): " + e.getMessage());
         }
 
-        /*  Merge Sort - Melhor Caso
+        //Merge Sort - Melhor Caso
         try {
             long Inicio = System.nanoTime();
-            MergeMelhorCaso.mergeSortCSVDataMes(EntradaCSV, SaidaMergeMelhorCaso);
+            MergeMelhorCaso.mergeSortCSVMes(EntradaCSV, SaidaMergeMelhorCaso);
             long Fim = System.nanoTime();
             TempoTotalMergeMelhorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMergeMelhorCaso);
@@ -82,7 +100,7 @@ public class OrdenacaoPorMesCrescente {
         // Merge Sort - Médio Caso
         try {
             long Inicio = System.nanoTime();
-            MergeMedioCaso.mergeSortCSVDataMes(EntradaCSV, SaidaMergeMedioCaso);
+            MergeMedioCaso.mergeSortCSVMes(EntradaCSV, SaidaMergeMedioCaso);
             long Fim = System.nanoTime();
             TempoTotalMergeMedioCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMergeMedioCaso);
@@ -93,13 +111,13 @@ public class OrdenacaoPorMesCrescente {
         // Merge Sort - Pior Caso
         try {
             long Inicio = System.nanoTime();
-            MergePiorCaso.mergeSortCSVDataMes(EntradaCSV, SaidaMergePiorCaso);
+            MergePiorCaso.mergeSortCSVMes(EntradaCSV, SaidaMergePiorCaso);
             long Fim = System.nanoTime();
             TempoTotalMergePiorCaso = Fim - Inicio;
             System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaMergePiorCaso);
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo com Merge Sort (Pior Caso): " + e.getMessage());
-        }*/
+        }
 
         // Quick Sort mediana de 3 - Melhor Caso
         String SaidaQuickMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSortmedianade3_melhorCaso.csv";
@@ -169,23 +187,132 @@ public class OrdenacaoPorMesCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo com Selection Sort (Pior Caso): " + e.getMessage());
         }
+        // Quick Sort - Melhor Caso
+        String SaidaQuickSortMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSort_melhorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            QuickMelhorCaso.quickSortCSVMes(EntradaCSV, SaidaQuickSortMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickSortMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Melhor Caso): " + e.getMessage());
+        }
+        // Quick Sort - Médio Caso
+        String SaidaQuickSortMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSort_medioCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            QuickMedioCaso.quickSortCSVMes(EntradaCSV, SaidaQuickSortMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalQuickMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickSortMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Médio Caso): " + e.getMessage());
+        }
+        // Quick Sort - Pior Caso
+        String SaidaQuickSortPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_quickSort_piorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            QuickPiorCaso.quickSortCSVMes(EntradaCSV, SaidaQuickSortPiorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalQuickPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaQuickSortPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Quick Sort (Pior Caso): " + e.getMessage());
+        }
+        // Heap Sort - Melhor Caso
+        String SaidaHeapSortMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_heapSort_melhorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            HeapMelhorCaso.heapSortCSVMes(EntradaCSV, SaidaHeapSortMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalHeapSortMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaHeapSortMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Heap Sort (Melhor Caso): " + e.getMessage());
+        }
+        // Heap Sort - Médio Caso
+        String SaidaHeapSortMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_heapSort_medioCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            HeapMedioCaso.heapSortCSVMes(EntradaCSV, SaidaHeapSortMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalHeapSortMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaHeapSortMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Heap Sort (Médio Caso): " + e.getMessage());
+        }
+        // Heap Sort - Pior Caso
+        String SaidaHeapSortPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_heapSort_piorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            HeapPiorCaso.heapSortCSVMes(EntradaCSV, SaidaHeapSortPiorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalHeapSortPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaHeapSortPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Heap Sort (Pior Caso): " + e.getMessage());
+        }
+        // Insection Sort - Melhor Caso
+        String SaidaInsectionSortMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_insectionSort_melhorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            InsectionMelhorCaso.insertionSortCSVMes(EntradaCSV, SaidaInsectionSortMelhorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalInsectionSortMelhorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaInsectionSortMelhorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Insection Sort (Melhor Caso): " + e.getMessage());
+        }
+        // Insection Sort - Médio Caso
+        String SaidaInsectionSortMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_insectionSort_medioCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            InsectionMedioCaso.insertionSortCSVMes(EntradaCSV, SaidaInsectionSortMedioCaso);
+            long Fim = System.nanoTime();
+            TempoTotalInsectionSortMedioCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaInsectionSortMedioCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Insection Sort (Médio Caso): " + e.getMessage());
+        }
+        // Insection Sort - Pior Caso
+        String SaidaInsectionSortPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_insectionSort_piorCaso.csv";
+        try {
+            long Inicio = System.nanoTime();
+            InsectionPiorCaso.insertionSortCSVMes(EntradaCSV, SaidaInsectionSortPiorCaso);
+            long Fim = System.nanoTime();
+            TempoTotalInsectionSortPiorCaso = Fim - Inicio;
+            System.out.println("Arquivo ordenado com sucesso e salvo em: " + SaidaInsectionSortPiorCaso);
+        } catch (IOException e) {
+            System.err.println("Erro ao processar o arquivo com Insection Sort (Pior Caso): " + e.getMessage());
+        }
         
         
     }
     
     public static void TempoDeExecucao() {
-        System.out.println("Tempo de execução de cada algoritmo quando ordenados pela coluna data: \n" +
+        System.out.println("Tempo de execução de cada algoritmo quando ordenados pelao mês: \n" +
             "Counting Sort Medio Caso: " + TempoTotalCountingMedioCaso + " ns\n" +
             "Counting Sort Pior Caso: " + TempoTotalCountingPiorCaso + " ns\n" +
             "Counting Sort Melhor Caso: " + TempoTotalCountingMelhorCaso + " ns\n" +
             "Merge Sort Melhor Caso: " + TempoTotalMergeMelhorCaso + " ns\n" +
             "Merge Sort Pior Caso: " + TempoTotalMergePiorCaso + " ns\n" +
             "Merge Sort Medio Caso: " + TempoTotalMergeMedioCaso + " ns\n"+
+            "Quick Sort Melhor Caso: " + TempoTotalQuickMelhorCaso + " ns\n" +
+            "Quick Sort Pior Caso: " + TempoTotalQuickPiorCaso + " ns\n" +
+            "Quick Sort Medio Caso: " + TempoTotalQuickMedioCaso + " ns\n" +
             "Quick Sort Mediana de 3 Melhor Caso: " + TempoTotalQuickMedianaDe3MelhorCaso + " ns\n" +
             "Quick Sort Mediana de 3 Pior Caso: " + TempoTotalQuickMedianaDe3PiorCaso + " ns\n" +
             "Quick Sort Mediana de 3 Medio Caso: " + TempoTotalQuickMedianaDe3MedioCaso + " ns\n" +
             "Selection Sort Melhor Caso: " + TempoTotalSelectionMelhorCaso + " ns\n" +
             "Selection Sort Pior Caso: " + TempoTotalSelectionPiorCaso + " ns\n" +
-            "Selection Sort Medio Caso: " + TempoTotalSelectionMedioCaso + " ns\n");
+            "Selection Sort Medio Caso: " + TempoTotalSelectionMedioCaso + " ns\n" +
+            "Heap Sort Melhor Caso: " + TempoTotalHeapSortMelhorCaso + " ns\n" +
+            "Heap Sort Pior Caso: " + TempoTotalHeapSortPiorCaso + " ns\n" +
+            "Heap Sort Medio Caso: " + TempoTotalHeapSortMedioCaso + " ns\n" +
+            "Insection Sort Melhor Caso: " + TempoTotalInsectionSortMelhorCaso + " ns\n" +
+            "Insection Sort Pior Caso: " + TempoTotalInsectionSortPiorCaso + " ns\n" +
+            "Insection Sort Medio Caso: " + TempoTotalInsectionSortMedioCaso + " ns\n" +
+            "----------------------------------------\n");
     }
 }
