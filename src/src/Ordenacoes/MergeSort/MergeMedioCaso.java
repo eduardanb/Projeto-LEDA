@@ -3,245 +3,179 @@ package Ordenacoes.MergeSort;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.*;
 
 public class MergeMedioCaso {
 
     public static void mergeSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2); // Coluna 2 = length
+        processCSV(inputFilePath, outputFilePath, 2);
     }
 
     public static void mergeSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithDate(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+        processCSVWithDate(inputFilePath, outputFilePath, 3);
     }
 
     public static void mergeSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithMonth(inputFilePath, outputFilePath, 3); // Coluna 3 = data no formato dd/MM/yyyy
+        processCSVWithMonth(inputFilePath, outputFilePath, 3);
     }
 
     private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+        BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+        String header = br.readLine();
 
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
+        int capacity = 10000;
+        String[] rows = new String[capacity];
+        long[] values = new long[capacity];
+        int rowCount = 0;
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (rowCount == capacity) {
+                capacity *= 2;
+                rows = java.util.Arrays.copyOf(rows, capacity);
+                values = java.util.Arrays.copyOf(values, capacity);
             }
-        }
 
-        int n = rows.size();
-        long[] values = new long[n];
-        int[] indices = new int[n];
-
-        // Inicializa índices e captura os valores da coluna indicada
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
+            rows[rowCount] = line;
             try {
-                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
-            } catch (NumberFormatException e) {
-                System.err.println("Valor inválido encontrado na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = 0;
+                values[rowCount] = Long.parseLong(line.split(",")[columnIndex]);
+            } catch (Exception e) {
+                values[rowCount] = 0;
             }
+            rowCount++;
         }
+        br.close();
 
-        // Ordena os índices com base nos valores
-        int[] sortedIndices = mergeSortWithIndices(values);
+        int[] indices = new int[rowCount];
+        for (int i = 0; i < rowCount; i++) indices[i] = i;
 
-        // Reorganiza as linhas com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : sortedIndices) {
-            sortedRows.add(rows.get(index));
+        mergeSort(values, indices, 0, rowCount - 1);
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
+        bw.write(header);
+        bw.newLine();
+        for (int i = 0; i < rowCount; i++) {
+            bw.write(rows[indices[i]]);
+            bw.newLine();
         }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, header, sortedRows);
+        bw.close();
     }
 
     private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+        BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+        String header = br.readLine();
+
+        int capacity = 10000;
+        String[] rows = new String[capacity];
+        long[] values = new long[capacity];
+        int rowCount = 0;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (rowCount == capacity) {
+                capacity *= 2;
+                rows = java.util.Arrays.copyOf(rows, capacity);
+                values = java.util.Arrays.copyOf(values, capacity);
             }
-        }
 
-        int n = rows.size();
-        long[] values = new long[n];
-        int[] indices = new int[n];
-
-        // Converter a data para número de dias desde 1970
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
+            rows[rowCount] = line;
             try {
-                String dataStr = rows.get(i)[columnIndex];
-                LocalDate data = LocalDate.parse(dataStr, formatter);
-                values[i] = data.toEpochDay();
-            } catch (DateTimeParseException e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = Long.MIN_VALUE;
+                String[] campos = line.split(",");
+                LocalDate date = LocalDate.parse(campos[columnIndex], formatter);
+                values[rowCount] = date.toEpochDay();
+            } catch (Exception e) {
+                values[rowCount] = Long.MIN_VALUE;
             }
+            rowCount++;
         }
+        br.close();
 
-        // Ordena os índices com base nos valores
-        int[] sortedIndices = mergeSortWithIndices(values);
+        int[] indices = new int[rowCount];
+        for (int i = 0; i < rowCount; i++) indices[i] = i;
 
-        // Reorganiza as linhas com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : sortedIndices) {
-            sortedRows.add(rows.get(index));
+        mergeSort(values, indices, 0, rowCount - 1);
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
+        bw.write(header);
+        bw.newLine();
+        for (int i = 0; i < rowCount; i++) {
+            bw.write(rows[indices[i]]);
+            bw.newLine();
         }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, header, sortedRows);
+        bw.close();
     }
 
     private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+        BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+        String header = br.readLine();
 
-        // Leitura do arquivo CSV
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
+        int capacity = 10000;
+        String[] rows = new String[capacity];
+        long[] values = new long[capacity];
+        int rowCount = 0;
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (rowCount == capacity) {
+                capacity *= 2;
+                rows = java.util.Arrays.copyOf(rows, capacity);
+                values = java.util.Arrays.copyOf(values, capacity);
             }
-        }
 
-        int n = rows.size();
-        long[] values = new long[n];
-        int[] indices = new int[n];
-
-        // Extrair o mês da coluna de data
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
+            rows[rowCount] = line;
             try {
-                String dataStr = rows.get(i)[columnIndex];
-                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                    throw new IllegalArgumentException("Formato de data inválido");
-                }
-                String[] partes = dataStr.split("/");
-                values[i] = Long.parseLong(partes[1]); // Extrai o mês
+                String[] campos = line.split(",");
+                String[] partes = campos[columnIndex].split("/");
+                values[rowCount] = Long.parseLong(partes[1]);
             } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = 0;
+                values[rowCount] = 0;
             }
+            rowCount++;
         }
+        br.close();
 
-        // Ordena os índices com base nos valores
-        int[] sortedIndices = mergeSortWithIndices(values);
+        int[] indices = new int[rowCount];
+        for (int i = 0; i < rowCount; i++) indices[i] = i;
 
-        // Reorganiza as linhas com base na ordenação
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : sortedIndices) {
-            sortedRows.add(rows.get(index));
+        mergeSort(values, indices, 0, rowCount - 1);
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
+        bw.write(header);
+        bw.newLine();
+        for (int i = 0; i < rowCount; i++) {
+            bw.write(rows[indices[i]]);
+            bw.newLine();
         }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, header, sortedRows);
+        bw.close();
     }
 
-    private static void writeCSV(String outputFilePath, String[] header, List<String[]> rows) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            for (String[] row : rows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
-    }
-
-    private static int[] mergeSortWithIndices(long[] array) {
-        int n = array.length;
-        int[] indices = new int[n];
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
-        }
-        mergeSortHelper(array, indices, 0, n - 1);
-        return indices;
-    }
-
-    private static void mergeSortHelper(long[] array, int[] indices, int left, int right) {
+    private static void mergeSort(long[] values, int[] indices, int left, int right) {
         if (left < right) {
             int mid = (left + right) / 2;
-            mergeSortHelper(array, indices, left, mid);
-            mergeSortHelper(array, indices, mid + 1, right);
-            merge(array, indices, left, mid, right);
+            mergeSort(values, indices, left, mid);
+            mergeSort(values, indices, mid + 1, right);
+            merge(values, indices, left, mid, right);
         }
     }
 
-    private static void merge(long[] array, int[] indices, int left, int mid, int right) {
-        int n1 = mid - left + 1;
-        int n2 = right - mid;
+    private static void merge(long[] values, int[] indices, int left, int mid, int right) {
+        int n = right - left + 1;
+        int[] temp = new int[n];
+        int i = left, j = mid + 1, k = 0;
 
-        long[] leftArray = new long[n1];
-        long[] rightArray = new long[n2];
-        int[] leftIndices = new int[n1];
-        int[] rightIndices = new int[n2];
-
-        for (int i = 0; i < n1; i++) {
-            leftArray[i] = array[left + i];
-            leftIndices[i] = indices[left + i];
-        }
-        for (int i = 0; i < n2; i++) {
-            rightArray[i] = array[mid + 1 + i];
-            rightIndices[i] = indices[mid + 1 + i];
-        }
-
-        int i = 0, j = 0, k = left;
-        while (i < n1 && j < n2) {
-            if (leftArray[i] <= rightArray[j]) {
-                array[k] = leftArray[i];
-                indices[k] = leftIndices[i];
-                i++;
+        while (i <= mid && j <= right) {
+            if (values[indices[i]] <= values[indices[j]]) {
+                temp[k++] = indices[i++];
             } else {
-                array[k] = rightArray[j];
-                indices[k] = rightIndices[j];
-                j++;
+                temp[k++] = indices[j++];
             }
-            k++;
         }
+        while (i <= mid) temp[k++] = indices[i++];
+        while (j <= right) temp[k++] = indices[j++];
 
-        while (i < n1) {
-            array[k] = leftArray[i];
-            indices[k] = leftIndices[i];
-            i++;
-            k++;
-        }
-
-        while (j < n2) {
-            array[k] = rightArray[j];
-            indices[k] = rightIndices[j];
-            j++;
-            k++;
+        for (int m = 0; m < n; m++) {
+            indices[left + m] = temp[m];
         }
     }
 }

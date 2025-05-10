@@ -1,111 +1,98 @@
 package Ordenacoes.HeapSort;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
 
 public class HeapPiorCaso {
 
     public static void heapSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2, false); // Coluna 2 = length, ordem decrescente
+        processCSV(inputFilePath, outputFilePath, 2, false);
     }
 
     public static void heapSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 3, true); // Coluna 3 = data, ordem crescente
+        processCSV(inputFilePath, outputFilePath, 3, true);
     }
 
     public static void heapSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithMonth(inputFilePath, outputFilePath, 3); // Coluna 3 = mês extraído da data, ordem crescente
+        processCSVWithMonth(inputFilePath, outputFilePath, 3);
+    }
+
+    private static int countLines(String inputFilePath) throws IOException {
+        int count = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            br.readLine(); // pula o cabeçalho
+            while (br.readLine() != null) count++;
+        }
+        return count;
     }
 
     private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
-        List<String[]> rows = new ArrayList<>();
+        int rowCount = countLines(inputFilePath);
+        String[] rows = new String[rowCount];
+        long[] values = new long[rowCount];
         String[] header = null;
 
-        // Leitura do arquivo CSV
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
             boolean isFirstLine = true;
+            int index = 0;
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
                     header = line.split(",");
                     isFirstLine = false;
                     continue;
                 }
-                rows.add(line.split(","));
+                rows[index] = line;
+                try {
+                    String[] parts = line.split(",");
+                    values[index] = Long.parseLong(parts[columnIndex]);
+                } catch (Exception e) {
+                    values[index] = 0;
+                }
+                index++;
             }
         }
 
-        int n = rows.size();
-        long[] values = new long[n];
-
-        // Captura os valores da coluna indicada
-        for (int i = 0; i < n; i++) {
-            try {
-                values[i] = Long.parseLong(rows.get(i)[columnIndex]);
-            } catch (NumberFormatException e) {
-                System.err.println("Valor inválido encontrado na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = 0;
-            }
-        }
-
-        // Preparar o pior caso
         prepareWorstCase(values, rows, ascending);
-
-        // Ordena os valores usando HeapSort
         heapSort(values, rows, ascending);
-
-        // Escreve o CSV ordenado
         writeCSV(outputFilePath, header, rows);
     }
 
     private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
+        int rowCount = countLines(inputFilePath);
+        String[] rows = new String[rowCount];
+        long[] values = new long[rowCount];
         String[] header = null;
 
-        // Leitura do arquivo CSV
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
             boolean isFirstLine = true;
+            int index = 0;
             while ((line = br.readLine()) != null) {
                 if (isFirstLine) {
                     header = line.split(",");
                     isFirstLine = false;
                     continue;
                 }
-                rows.add(line.split(","));
-            }
-        }
-
-        int n = rows.size();
-        long[] values = new long[n];
-
-        // Extrai o mês da coluna de data
-        for (int i = 0; i < n; i++) {
-            try {
-                String dataStr = rows.get(i)[columnIndex];
-                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                    throw new IllegalArgumentException("Formato de data inválido");
+                rows[index] = line;
+                try {
+                    String[] parts = line.split(",");
+                    String data = parts[columnIndex];
+                    String[] dataParts = data.split("/");
+                    values[index] = Long.parseLong(dataParts[1]);
+                } catch (Exception e) {
+                    values[index] = 0;
                 }
-                String[] partes = dataStr.split("/");
-                values[i] = Long.parseLong(partes[1]); // Extrai o mês
-            } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[columnIndex]);
-                values[i] = 0;
+                index++;
             }
         }
 
-        // Preparar o pior caso
         prepareWorstCase(values, rows, true);
-
-        // Ordena os valores usando HeapSort
         heapSort(values, rows, true);
-
-        // Escreve o CSV ordenado
         writeCSV(outputFilePath, header, rows);
     }
 
-    private static void prepareWorstCase(long[] values, List<String[]> rows, boolean ascending) {
-        // Ordena os valores em ordem crescente ou decrescente
+    private static void prepareWorstCase(long[] values, String[] rows, boolean ascending) {
         Arrays.sort(values);
         if (ascending) {
             for (int i = 0; i < values.length / 2; i++) {
@@ -115,52 +102,38 @@ public class HeapPiorCaso {
             }
         }
 
-        // Reorganiza as linhas do CSV com base nos valores ordenados
-        rows.sort((row1, row2) -> {
-            long value1 = Long.parseLong(row1[2]);
-            long value2 = Long.parseLong(row2[2]);
-            return ascending ? Long.compare(value2, value1) : Long.compare(value1, value2);
-        });
+        // Neste ponto já estamos fazendo HeapSort com os valores ordenados,
+        // a reorganização das linhas será tratada pelo heapSort
     }
 
-    private static void heapSort(long[] values, List<String[]> rows, boolean ascending) {
+    private static void heapSort(long[] values, String[] rows, boolean ascending) {
         int n = values.length;
 
-        // Constrói o heap (reorganiza o array)
         for (int i = n / 2 - 1; i >= 0; i--) {
             heapify(values, rows, n, i, ascending);
         }
 
-        // Extrai elementos do heap um por um
         for (int i = n - 1; i > 0; i--) {
-            // Move a raiz atual para o final
             swap(values, rows, 0, i);
-
-            // Chama heapify no heap reduzido
             heapify(values, rows, i, 0, ascending);
         }
     }
 
-    private static void heapify(long[] values, List<String[]> rows, int n, int i, boolean ascending) {
-        int largestOrSmallest = i; // Inicializa o maior ou menor como raiz
-        int left = 2 * i + 1; // Filho esquerdo
-        int right = 2 * i + 2; // Filho direito
+    private static void heapify(long[] values, String[] rows, int n, int i, boolean ascending) {
+        int largestOrSmallest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
 
-        // Verifica se o filho esquerdo é maior/menor que a raiz
         if (left < n && compare(values[left], values[largestOrSmallest], ascending)) {
             largestOrSmallest = left;
         }
 
-        // Verifica se o filho direito é maior/menor que o maior/menor atual
         if (right < n && compare(values[right], values[largestOrSmallest], ascending)) {
             largestOrSmallest = right;
         }
 
-        // Se o maior/menor não for a raiz
         if (largestOrSmallest != i) {
             swap(values, rows, i, largestOrSmallest);
-
-            // Recursivamente aplica o heapify na subárvore afetada
             heapify(values, rows, n, largestOrSmallest, ascending);
         }
     }
@@ -169,24 +142,24 @@ public class HeapPiorCaso {
         return ascending ? a < b : a > b;
     }
 
-    private static void swap(long[] values, List<String[]> rows, int i, int j) {
-        long tempValue = values[i];
+    private static void swap(long[] values, String[] rows, int i, int j) {
+        long tmpVal = values[i];
         values[i] = values[j];
-        values[j] = tempValue;
+        values[j] = tmpVal;
 
-        String[] tempRow = rows.get(i);
-        rows.set(i, rows.get(j));
-        rows.set(j, tempRow);
+        String tmpRow = rows[i];
+        rows[i] = rows[j];
+        rows[j] = tmpRow;
     }
 
-    private static void writeCSV(String outputFilePath, String[] header, List<String[]> rows) throws IOException {
+    private static void writeCSV(String outputFilePath, String[] header, String[] rows) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
             if (header != null) {
                 bw.write(String.join(",", header));
                 bw.newLine();
             }
-            for (String[] row : rows) {
-                bw.write(String.join(",", row));
+            for (String row : rows) {
+                bw.write(row);
                 bw.newLine();
             }
         }
