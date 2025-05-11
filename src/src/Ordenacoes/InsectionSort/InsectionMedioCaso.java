@@ -1,7 +1,7 @@
 package Ordenacoes.InsectionSort;
 
 import java.io.*;
-import java.util.Random;
+import java.util.*;
 
 public class InsectionMedioCaso {
 
@@ -18,137 +18,148 @@ public class InsectionMedioCaso {
     }
 
     private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex, boolean descending) throws IOException {
-        String[][] rows = readCSV(inputFilePath);
-        int n = rows.length;
+        String[] lines = readCSV(inputFilePath);
+        String header = lines[0];
+        String[] dataLines = Arrays.copyOfRange(lines, 1, lines.length);
+        int n = dataLines.length;
 
-        // Preparar os dados no médio caso (parcialmente embaralhados)
         long[] values = new long[n];
         int[] indices = new int[n];
+
         for (int i = 0; i < n; i++) {
-            values[i] = Long.parseLong(rows[i][columnIndex]);
+            String[] parts = dataLines[i].split(",");
+            try {
+                values[i] = Long.parseLong(parts[columnIndex]);
+            } catch (NumberFormatException e) {
+                System.err.println("Valor inválido na linha " + (i + 2) + ": " + parts[columnIndex]);
+                values[i] = 0;
+            }
             indices[i] = i;
         }
+
         shufflePartially(values, indices);
+        insertionSort(values, indices, !descending);
 
-        // Ordenação usando InsertionSort
-        insertionSort(values, indices, descending);
-
-        // Reorganizar as linhas do CSV
-        String[][] sortedRows = new String[n][];
-        for (int i = 0; i < n; i++) {
-            sortedRows[i] = rows[indices[i]];
-        }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, sortedRows);
+        writeCSV(outputFilePath, header, dataLines, indices);
     }
 
     private static void processCSVWithDate(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
-        String[][] rows = readCSV(inputFilePath);
-        int n = rows.length;
+        String[] lines = readCSV(inputFilePath);
+        String header = lines[0];
+        String[] dataLines = Arrays.copyOfRange(lines, 1, lines.length);
+        int n = dataLines.length;
 
-        // Preparar os dados no médio caso (parcialmente embaralhados)
         long[] values = new long[n];
         int[] indices = new int[n];
+
         for (int i = 0; i < n; i++) {
-            String[] dateParts = rows[i][columnIndex].split("/");
-            values[i] = Long.parseLong(dateParts[2] + dateParts[1] + dateParts[0]); // AnoMêsDia
+            String[] parts = dataLines[i].split(",");
+            try {
+                String[] dateParts = parts[columnIndex].split("/");
+                values[i] = Long.parseLong(dateParts[2] + dateParts[1] + dateParts[0]); // AnoMêsDia
+            } catch (Exception e) {
+                System.err.println("Erro ao processar data na linha " + (i + 2) + ": " + parts[columnIndex]);
+                values[i] = 0;
+            }
             indices[i] = i;
         }
-        shufflePartially(values, indices);
 
-        // Ordenação usando InsertionSort
+        shufflePartially(values, indices);
         insertionSort(values, indices, ascending);
 
-        // Reorganizar as linhas do CSV
-        String[][] sortedRows = new String[n][];
-        for (int i = 0; i < n; i++) {
-            sortedRows[i] = rows[indices[i]];
-        }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, sortedRows);
+        writeCSV(outputFilePath, header, dataLines, indices);
     }
 
     private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
-        String[][] rows = readCSV(inputFilePath);
-        int n = rows.length;
+        String[] lines = readCSV(inputFilePath);
+        String header = lines[0];
+        String[] dataLines = Arrays.copyOfRange(lines, 1, lines.length);
+        int n = dataLines.length;
 
-        // Preparar os dados no médio caso (parcialmente embaralhados)
         long[] values = new long[n];
         int[] indices = new int[n];
+
         for (int i = 0; i < n; i++) {
-            String[] dateParts = rows[i][columnIndex].split("/");
-            values[i] = Long.parseLong(dateParts[1]); // Apenas o mês
+            String[] parts = dataLines[i].split(",");
+            try {
+                String[] dateParts = parts[columnIndex].split("/");
+                values[i] = Long.parseLong(dateParts[1]); // Mês
+            } catch (Exception e) {
+                System.err.println("Erro ao processar mês na linha " + (i + 2) + ": " + parts[columnIndex]);
+                values[i] = 0;
+            }
             indices[i] = i;
         }
-        shufflePartially(values, indices);
 
-        // Ordenação usando InsertionSort
+        shufflePartially(values, indices);
         insertionSort(values, indices, ascending);
 
-        // Reorganizar as linhas do CSV
-        String[][] sortedRows = new String[n][];
-        for (int i = 0; i < n; i++) {
-            sortedRows[i] = rows[indices[i]];
-        }
-
-        // Escreve o CSV ordenado
-        writeCSV(outputFilePath, sortedRows);
+        writeCSV(outputFilePath, header, dataLines, indices);
     }
 
-    private static String[][] readCSV(String inputFilePath) throws IOException {
+    private static String[] readCSV(String inputFilePath) throws IOException {
+        // Primeira passada: contar linhas
+        int lineCount = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String[] lines = br.lines().toArray(String[]::new);
-            String[][] rows = new String[lines.length][];
-            for (int i = 0; i < lines.length; i++) {
-                rows[i] = lines[i].split(",");
+            while (br.readLine() != null) {
+                lineCount++;
             }
-            return rows;
         }
+
+        // Segunda passada: ler conteúdo
+        String[] lines = new String[lineCount];
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
+            for (int i = 0; i < lineCount; i++) {
+                lines[i] = br.readLine();
+            }
+        }
+
+        return lines;
     }
 
     private static void shufflePartially(long[] values, int[] indices) {
         Random random = new Random();
         int n = values.length;
+        int shuffleCount = Math.max(n / 10, 1); // Garante pelo menos 1 troca
 
-        // Embaralha parcialmente os dados (troca 10% dos elementos aleatoriamente)
-        for (int i = 0; i < n / 10; i++) {
-            int index1 = random.nextInt(n);
-            int index2 = random.nextInt(n);
+        for (int i = 0; i < shuffleCount; i++) {
+            int a = random.nextInt(n);
+            int b = random.nextInt(n);
 
-            // Troca os valores
-            long tempValue = values[index1];
-            values[index1] = values[index2];
-            values[index2] = tempValue;
+            long tempVal = values[a];
+            values[a] = values[b];
+            values[b] = tempVal;
 
-            // Troca os índices
-            int tempIndex = indices[index1];
-            indices[index1] = indices[index2];
-            indices[index2] = tempIndex;
+            int tempIdx = indices[a];
+            indices[a] = indices[b];
+            indices[b] = tempIdx;
         }
     }
 
     private static void insertionSort(long[] values, int[] indices, boolean ascending) {
         for (int i = 1; i < values.length; i++) {
             long key = values[i];
-            int keyIndex = indices[i];
+            int keyIdx = indices[i];
             int j = i - 1;
-
+            
             while (j >= 0 && (ascending ? values[j] > key : values[j] < key)) {
                 values[j + 1] = values[j];
                 indices[j + 1] = indices[j];
                 j--;
             }
             values[j + 1] = key;
-            indices[j + 1] = keyIndex;
+            indices[j + 1] = keyIdx;
         }
     }
 
-    private static void writeCSV(String outputFilePath, String[][] rows) throws IOException {
+    private static void writeCSV(String outputFilePath, String header, String[] dataLines, int[] indices) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            for (String[] row : rows) {
-                bw.write(String.join(",", row)); // Escreve cada linha
+            if (header != null) {
+                bw.write(header);
+                bw.newLine();
+            }
+            for (int index : indices) {
+                bw.write(dataLines[index]);
                 bw.newLine();
             }
         }

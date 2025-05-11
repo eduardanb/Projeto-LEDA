@@ -3,6 +3,7 @@ package Ordenacoes.SelectionSort;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,23 +32,22 @@ public class SelectionMedioCaso {
         }
 
         int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    long[] values = new long[n];
+    Integer[] indices = new Integer[n];
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
-            try {
-                if (rows.get(i).length <= 3) throw new IllegalArgumentException("Coluna de data ausente");
-                String dataStr = rows.get(i)[3];
-                LocalDate data = LocalDate.parse(dataStr, formatter);
-                values[i] = data.toEpochDay();
-            } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " +
-                        (rows.get(i).length > 3 ? rows.get(i)[3] : "DADO AUSENTE"));
-                values[i] = Long.MIN_VALUE;
-            }
+    // Converter a data para número de dias desde 1970
+    for (int i = 0; i < n; i++) {
+        indices[i] = i;
+        try {
+            String dataStr = rows.get(i)[3]; // Coluna de data (índice 3)
+            LocalDate data = LocalDate.parse(dataStr, formatter);
+            values[i] = data.toEpochDay();
+        } catch (DateTimeParseException e) {
+            System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[3]);
+            values[i] = Long.MIN_VALUE;
         }
+    }
 
         selectionSort(values, indices);
 
