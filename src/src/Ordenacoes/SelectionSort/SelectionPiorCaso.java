@@ -4,196 +4,167 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SelectionPiorCaso {
 
-    public static void SelectionCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2); // Coluna 2 = length
+    public static void SelectionCSVLength(String inputPath, String outputPath) throws IOException {
+        processCSV(inputPath, outputPath, 2);
     }
 
-    public static void SelectionCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+    public static void SelectionCSVData(String inputPath, String outputPath) throws IOException {
+        CSVData csv = lerCSV(inputPath);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
+        long[] valores = new long[csv.totalRows - 1];
+        int[] indices = new int[csv.totalRows - 1];
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
+        for (int i = 1; i < csv.totalRows; i++) {
+            indices[i - 1] = i - 1;
             try {
-                String dataStr = rows.get(i)[3];
-                LocalDate data = LocalDate.parse(dataStr, formatter);
-                values[i] = data.toEpochDay();
+                String data = csv.linear[csv.rowStart[i] + 3];
+                LocalDate d = LocalDate.parse(data, formatador);
+                valores[i - 1] = d.toEpochDay();
             } catch (DateTimeParseException e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[3]);
-                values[i] = Long.MIN_VALUE;
+                System.err.println("Erro na data linha " + (i + 1) + ": " + csv.linear[csv.rowStart[i] + 3]);
+                valores[i - 1] = Long.MIN_VALUE;
             }
         }
 
-        selectionSortWorstCase(values, indices);
-
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : indices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
+        selectionSortPiorCaso(valores, indices);
+        escreverCSV(outputPath, csv.linear, csv.rowStart, indices, csv.totalRows);
     }
 
-    public static void SelectionCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+    public static void SelectionCSVMes(String inputPath, String outputPath) throws IOException {
+        CSVData csv = lerCSV(inputPath);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
+        long[] valores = new long[csv.totalRows - 1];
+        int[] indices = new int[csv.totalRows - 1];
 
-        int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
+        for (int i = 1; i < csv.totalRows; i++) {
+            indices[i - 1] = i - 1;
             try {
-                String dataStr = rows.get(i)[3];
-                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                    throw new IllegalArgumentException("Formato de data inválido");
-                }
-                String[] partes = dataStr.split("/");
-                values[i] = Long.parseLong(partes[1]);
+                String data = csv.linear[csv.rowStart[i] + 3];
+                String[] partes = data.split("/");
+                valores[i - 1] = Long.parseLong(partes[1]); // mês
             } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + rows.get(i)[3]);
-                values[i] = 0;
+                System.err.println("Erro na data linha " + (i + 1) + ": " + csv.linear[csv.rowStart[i] + 3]);
+                valores[i - 1] = 0;
             }
         }
 
-        selectionSortWorstCase(values, indices);
-
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : indices) {
-            sortedRows.add(rows.get(index));
-        }
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
-        }
+        selectionSortPiorCaso(valores, indices);
+        escreverCSV(outputPath, csv.linear, csv.rowStart, indices, csv.totalRows);
     }
 
-    // ✅ Método corrigido e robusto
     private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
-        List<String[]> rows = new ArrayList<>();
-        String[] header = null;
+        CSVData csv = lerCSV(inputFilePath);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
-            String line;
-            boolean isFirstLine = true;
-            while ((line = br.readLine()) != null) {
-                if (isFirstLine) {
-                    header = line.split(",");
-                    isFirstLine = false;
-                    continue;
-                }
-                rows.add(line.split(","));
-            }
-        }
+        long[] valores = new long[csv.totalRows - 1];
+        int[] indices = new int[csv.totalRows - 1];
 
-        int n = rows.size();
-        long[] values = new long[n];
-        Integer[] indices = new Integer[n];
-
-        for (int i = 0; i < n; i++) {
-            indices[i] = i;
-            String rawValue = rows.get(i)[columnIndex].trim();
-
+        for (int i = 1; i < csv.totalRows; i++) {
+            indices[i - 1] = i - 1;
             try {
-                if (rawValue.matches("\\d+")) {
-                    values[i] = Long.parseLong(rawValue);
-                } else {
-                    System.err.println("Valor inválido na linha " + (i + 2) + ": " + rawValue);
-                    values[i] = 0;
-                }
-            } catch (Exception e) {
-                System.err.println("Erro ao converter valor na linha " + (i + 2) + ": " + rawValue);
-                values[i] = 0;
+                valores[i - 1] = Long.parseLong(csv.linear[csv.rowStart[i] + columnIndex]);
+            } catch (NumberFormatException e) {
+                System.err.println("Valor inválido na linha " + (i + 1) + ": " + csv.linear[csv.rowStart[i] + columnIndex]);
+                valores[i - 1] = 0;
             }
         }
 
-        selectionSortWorstCase(values, indices);
+        selectionSortPiorCaso(valores, indices);
+        escreverCSV(outputFilePath, csv.linear, csv.rowStart, indices, csv.totalRows);
+    }
 
-        List<String[]> sortedRows = new ArrayList<>();
-        for (int index : indices) {
-            sortedRows.add(rows.get(index));
-        }
+    // Estrutura auxiliar para armazenar os dados do CSV de forma dinâmica
+    private static class CSVData {
+        String[] linear;
+        int[] rowStart;
+        int totalRows;
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath))) {
-            if (header != null) {
-                bw.write(String.join(",", header));
-                bw.newLine();
-            }
-            for (String[] row : sortedRows) {
-                bw.write(String.join(",", row));
-                bw.newLine();
-            }
+        CSVData(String[] linear, int[] rowStart, int totalRows) {
+            this.linear = linear;
+            this.rowStart = rowStart;
+            this.totalRows = totalRows;
         }
     }
 
-    private static void selectionSortWorstCase(long[] values, Integer[] indices) {
-        int n = indices.length;
+    // Método dinâmico para ler o CSV em arrays unidimensionais
+    private static CSVData lerCSV(String caminho) throws IOException {
+        int linearCap = 10000;
+        int rowCap = 1000;
+        String[] linear = new String[linearCap];
+        int[] rowStart = new int[rowCap];
+        int pos = 0;
+        int linhaIndex = 0;
 
+        BufferedReader br = new BufferedReader(new FileReader(caminho));
+        String linha;
+        while ((linha = br.readLine()) != null) {
+            if (linhaIndex == rowStart.length) {
+                int[] novoRowStart = new int[rowStart.length * 2];
+                System.arraycopy(rowStart, 0, novoRowStart, 0, rowStart.length);
+                rowStart = novoRowStart;
+            }
+            rowStart[linhaIndex] = pos;
+            String[] campos = linha.split(",");
+            if (pos + campos.length > linear.length) {
+                String[] novoLinear = new String[linear.length * 2];
+                System.arraycopy(linear, 0, novoLinear, 0, linear.length);
+                linear = novoLinear;
+            }
+            for (String campo : campos) {
+                linear[pos++] = campo;
+            }
+            linhaIndex++;
+        }
+        br.close();
+
+        // Reduz os arrays ao tamanho real
+        String[] linearFinal = new String[pos];
+        System.arraycopy(linear, 0, linearFinal, 0, pos);
+        int[] rowStartFinal = new int[linhaIndex];
+        System.arraycopy(rowStart, 0, rowStartFinal, 0, linhaIndex);
+
+        return new CSVData(linearFinal, rowStartFinal, linhaIndex);
+    }
+
+    private static void escreverCSV(String caminho, String[] linear, int[] rowStart, int[] indices, int totalRows) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(caminho));
+
+        // Cabeçalho
+        for (int i = rowStart[0]; i < rowStart[1]; i++) {
+            bw.write(linear[i]);
+            if (i < rowStart[1] - 1) bw.write(",");
+        }
+        bw.newLine();
+
+        // Dados
+        for (int idx : indices) {
+            int start = rowStart[idx + 1];
+            int end = (idx + 2 < totalRows) ? rowStart[idx + 2] : linear.length;
+            for (int i = start; i < end && linear[i] != null; i++) {
+                bw.write(linear[i]);
+                if (i + 1 < end && linear[i + 1] != null) bw.write(",");
+            }
+            bw.newLine();
+        }
+
+        bw.close();
+    }
+
+    private static void selectionSortPiorCaso(long[] valores, int[] indices) {
+        int n = indices.length;
         for (int i = 0; i < n - 1; i++) {
-            int minIndex = i;
+            int menor = i;
             for (int j = i + 1; j < n; j++) {
-                if (values[indices[j]] < values[indices[minIndex]]) {
-                    minIndex = j;
+                if (valores[indices[j]] < valores[indices[menor]]) {
+                    menor = j;
                 }
             }
-
-            // Troca sempre (pior caso)
-            int temp = indices[minIndex];
-            indices[minIndex] = indices[i];
-            indices[i] = temp;
+            int tmp = indices[menor];
+            indices[menor] = indices[i];
+            indices[i] = tmp;
         }
     }
 }
