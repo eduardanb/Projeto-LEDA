@@ -91,6 +91,14 @@ public class CountingMedioCaso {
         }
 
         countingSort(values, indices, max);
+
+        // INVERTE para length decrescente
+        for (int i = 0; i < n / 2; i++) {
+            Integer temp = indices[i];
+            indices[i] = indices[n - 1 - i];
+            indices[n - 1 - i] = temp;
+        }
+
         writeCSV(outputFilePath, header, dataLines, indices);
     }
 

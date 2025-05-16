@@ -85,6 +85,14 @@ public class CountingPiorCaso {
         }
 
         int[] sortedIndices = countingSort(values, max);
+
+        // INVERTE para ordem decrescente (apenas para length)
+        for (int i = 0; i < n / 2; i++) {
+            int temp = sortedIndices[i];
+            sortedIndices[i] = sortedIndices[n - 1 - i];
+            sortedIndices[n - 1 - i] = temp;
+        }
+
         writeCSV(outputFilePath, header, dataLines, sortedIndices);
     }
 

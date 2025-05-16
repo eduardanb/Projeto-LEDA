@@ -1,31 +1,32 @@
 package Ordenacoes.HeapSort;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class HeapMedioCaso {
 
     public static void heapSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2, false);
+        processCSV(inputFilePath, outputFilePath, 2, true);
     }
 
     public static void heapSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 3, true);
+        processCSVData(inputFilePath, outputFilePath);
     }
 
     public static void heapSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVWithMonth(inputFilePath, outputFilePath, 3);
+        processCSVMonth(inputFilePath, outputFilePath, 3);
     }
 
     private static void processCSV(String inputFilePath, String outputFilePath, int columnIndex, boolean ascending) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
         String header = br.readLine();
 
-        // Conta número de linhas
         int n = 0;
         while (br.readLine() != null) n++;
         br.close();
 
-        // Carrega linhas e valores
         String[] lines = new String[n];
         long[] values = new long[n];
         int[] indices = new int[n];
@@ -52,7 +53,44 @@ public class HeapMedioCaso {
         writeCSV(outputFilePath, header, lines, indices);
     }
 
-    private static void processCSVWithMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
+    private static void processCSVData(String inputFilePath, String outputFilePath) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
+        String header = br.readLine();
+
+        int n = 0;
+        while (br.readLine() != null) n++;
+        br.close();
+
+        String[] lines = new String[n];
+        long[] values = new long[n];
+        int[] indices = new int[n];
+
+        br = new BufferedReader(new FileReader(inputFilePath));
+        br.readLine(); // Pula cabeçalho
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (int i = 0; i < n; i++) {
+            String line = br.readLine();
+            lines[i] = line;
+            String[] parts = line.split(",");
+            try {
+                LocalDate data = LocalDate.parse(parts[3], formatter);
+                values[i] = data.toEpochDay();
+            } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
+                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + (parts.length > 3 ? parts[3] : "coluna ausente"));
+                values[i] = 0;
+            }
+            indices[i] = i;
+        }
+        br.close();
+
+        heapSort(values, indices, false);
+
+        writeCSV(outputFilePath, header, lines, indices);
+    }
+
+    private static void processCSVMonth(String inputFilePath, String outputFilePath, int columnIndex) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFilePath));
         String header = br.readLine();
 
@@ -73,20 +111,18 @@ public class HeapMedioCaso {
             String[] parts = line.split(",");
             try {
                 String dataStr = parts[columnIndex];
-                if (!dataStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                    throw new IllegalArgumentException("Formato de data inválido");
-                }
                 String[] dataParts = dataStr.split("/");
+                if (dataParts.length < 2) throw new IllegalArgumentException("Data inválida: " + dataStr);
                 values[i] = Long.parseLong(dataParts[1]);
             } catch (Exception e) {
-                System.err.println("Erro ao processar a data na linha " + (i + 2) + ": " + parts[columnIndex]);
+                System.err.println("Erro ao processar o mês na linha " + (i + 2) + ": " + (parts.length > columnIndex ? parts[columnIndex] : "coluna ausente"));
                 values[i] = 0;
             }
             indices[i] = i;
         }
         br.close();
 
-        heapSort(values, indices, true);
+        heapSort(values, indices, false);
 
         writeCSV(outputFilePath, header, lines, indices);
     }
@@ -105,21 +141,21 @@ public class HeapMedioCaso {
     }
 
     private static void heapify(long[] values, int[] indices, int n, int i, boolean ascending) {
-        int largestOrSmallest = i;
+        int target = i;
         int left = 2 * i + 1;
         int right = 2 * i + 2;
 
-        if (left < n && compare(values[indices[left]], values[indices[largestOrSmallest]], ascending)) {
-            largestOrSmallest = left;
+        if (left < n && compare(values[indices[left]], values[indices[target]], ascending)) {
+            target = left;
         }
 
-        if (right < n && compare(values[indices[right]], values[indices[largestOrSmallest]], ascending)) {
-            largestOrSmallest = right;
+        if (right < n && compare(values[indices[right]], values[indices[target]], ascending)) {
+            target = right;
         }
 
-        if (largestOrSmallest != i) {
-            swap(indices, i, largestOrSmallest);
-            heapify(values, indices, n, largestOrSmallest, ascending);
+        if (target != i) {
+            swap(indices, i, target);
+            heapify(values, indices, n, target, ascending);
         }
     }
 

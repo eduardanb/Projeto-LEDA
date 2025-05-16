@@ -50,6 +50,13 @@ public class MergeMedioCaso {
 
         mergeSort(values, indices, 0, rowCount - 1);
 
+        // INVERTE para ordem decrescente (apenas para length)
+        for (int i = 0; i < rowCount / 2; i++) {
+            int temp = indices[i];
+            indices[i] = indices[rowCount - 1 - i];
+            indices[rowCount - 1 - i] = temp;
+        }
+
         BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
         bw.write(header);
         bw.newLine();

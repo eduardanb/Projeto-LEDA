@@ -6,7 +6,7 @@ import java.util.*;
 public class InsectionMedioCaso {
 
     public static void insertionSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSV(inputFilePath, outputFilePath, 2, false); // Coluna 2 = length, ordem decrescente
+        processCSV(inputFilePath, outputFilePath, 2, true); // Coluna 2 = length, ordem decrescente
     }
 
     public static void insertionSortCSVData(String inputFilePath, String outputFilePath) throws IOException {

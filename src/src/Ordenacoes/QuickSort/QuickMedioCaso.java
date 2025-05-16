@@ -42,6 +42,15 @@ public class QuickMedioCaso {
 
         quickSortWithIndices(values, indices, 0, n - 1);
 
+        // Inverte apenas se for length (coluna 2)
+        if (columnIndex == 2) {
+            for (int i = 0; i < n / 2; i++) {
+                int temp = indices[i];
+                indices[i] = indices[n - 1 - i];
+                indices[n - 1 - i] = temp;
+            }
+        }
+
         String[] sortedDataLines = new String[n];
         for (int i = 0; i < n; i++) {
             sortedDataLines[i] = dataLines[indices[i]];

@@ -87,6 +87,14 @@ public class Quick3MelhorCaso {
         }
 
         quickSortMelhorCaso(valores, indices, 0, n - 1);
+
+        // INVERTE para ordem decrescente (apenas para length)
+        for (int i = 0; i < n / 2; i++) {
+            int temp = indices[i];
+            indices[i] = indices[n - 1 - i];
+            indices[n - 1 - i] = temp;
+        }
+
         escreverCSV(outputFilePath, header, linhas, indices);
     }
 

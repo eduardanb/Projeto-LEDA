@@ -46,12 +46,21 @@ public class QuickMelhorCaso {
         // QuickSort em cima dos índices
         quickSort(values, indices, 0, n - 1);
 
-        String[] sortedLines = new String[n];
-        for (int i = 0; i < n; i++) {
-            sortedLines[i] = dataLines[indices[i]];
+        // Inverte apenas se for length (coluna 2)
+        if (columnIndex == 2) {
+            for (int i = 0; i < n / 2; i++) {
+                int temp = indices[i];
+                indices[i] = indices[n - 1 - i];
+                indices[n - 1 - i] = temp;
+            }
         }
 
-        writeCSV(outputFilePath, header, sortedLines);
+        String[] sortedDataLines = new String[n];
+        for (int i = 0; i < n; i++) {
+            sortedDataLines[i] = dataLines[indices[i]];
+        }
+
+        writeCSV(outputFilePath, header, sortedDataLines);
     }
 
     @FunctionalInterface

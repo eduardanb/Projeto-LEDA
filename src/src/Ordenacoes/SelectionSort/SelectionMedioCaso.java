@@ -105,6 +105,14 @@ public class SelectionMedioCaso {
         }
 
         selectionSort(values, indices);
+
+        // INVERTE para ordem decrescente (apenas para length)
+        for (int i = 0; i < n / 2; i++) {
+            int temp = indices[i];
+            indices[i] = indices[n - 1 - i];
+            indices[n - 1 - i] = temp;
+        }
+
         writeCSV(outputFilePath, header, dataLines, indices);
     }
 

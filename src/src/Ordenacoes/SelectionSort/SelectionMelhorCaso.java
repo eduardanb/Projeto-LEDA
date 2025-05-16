@@ -88,26 +88,27 @@ public class SelectionMelhorCaso {
         }
 
         selectionSortMelhorCaso(values, indices);
+
+        // INVERTE para ordem decrescente (apenas para length)
+        for (int i = 0; i < n / 2; i++) {
+            int temp = indices[i];
+            indices[i] = indices[n - 1 - i];
+            indices[n - 1 - i] = temp;
+        }
+
         writeCSV(outputFilePath, header, dataLines, indices);
     }
 
     private static void selectionSortMelhorCaso(long[] values, int[] indices) {
         int n = indices.length;
-        boolean trocou;
-
         for (int i = 0; i < n - 1; i++) {
-            trocou = false;
             int minIdx = i;
-
             for (int j = i + 1; j < n; j++) {
                 if (values[indices[j]] < values[indices[minIdx]]) {
                     minIdx = j;
-                    trocou = true;
                 }
             }
-
-            if (!trocou) break;
-
+            // Troca sempre, mesmo se minIdx == i (não tem problema)
             int temp = indices[i];
             indices[i] = indices[minIdx];
             indices[minIdx] = temp;

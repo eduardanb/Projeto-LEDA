@@ -16,22 +16,22 @@ public class QuickPiorCaso {
 
     // Ordena por tamanho (coluna 2)
     public static void quickSortCSVLength(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVByLong(inputFilePath, outputFilePath, 2, QuickPiorCaso::parseLongFromColumn);
+        processCSVByLong(inputFilePath, outputFilePath, 2, QuickPiorCaso::parseLongFromColumn, true); // decrescente
     }
 
     // Ordena por data (coluna 3)
     public static void quickSortCSVData(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVByLong(inputFilePath, outputFilePath, 3, QuickPiorCaso::parseEpochDayFromDate);
+        processCSVByLong(inputFilePath, outputFilePath, 3, QuickPiorCaso::parseEpochDayFromDate, false); // crescente
     }
 
     // Ordena por mês (coluna 3)
     public static void quickSortCSVMes(String inputFilePath, String outputFilePath) throws IOException {
-        processCSVByLong(inputFilePath, outputFilePath, 3, QuickPiorCaso::parseMonthFromDate);
+        processCSVByLong(inputFilePath, outputFilePath, 3, QuickPiorCaso::parseMonthFromDate, false); // crescente
     }
 
     // Processa o CSV, extrai valores e executa o QuickSort no pior caso
     private static void processCSVByLong(String inputFilePath, String outputFilePath, int columnIndex,
-                                         ValueExtractor extractor) throws IOException {
+                                         ValueExtractor extractor, boolean decrescente) throws IOException {
 
         String[] lines = readCSV(inputFilePath);
         if (lines.length == 0) throw new IOException("Arquivo vazio: " + inputFilePath);
@@ -59,23 +59,23 @@ public class QuickPiorCaso {
             }
         }
 
-        // Gera o pior caso para o QuickSort (array já ordenado)
-        prepareWorstCase(values, cleanedLines);
+        // Gera o pior caso para o QuickSort (array já ordenado crescente ou decrescente)
+        prepareWorstCase(values, cleanedLines, decrescente);
 
         // Executa o QuickSort
-        quickSort(values, cleanedLines, 0, n - 1);
+        quickSort(values, cleanedLines, 0, n - 1, decrescente);
 
         // Escreve o resultado no arquivo de saída
         writeCSV(outputFilePath, header, cleanedLines);
     }
 
-    // Gera o pior caso para o QuickSort: array já ordenado
-    private static void prepareWorstCase(long[] values, String[] lines) {
+    // Gera o pior caso para o QuickSort: array já ordenado crescente ou decrescente
+    private static void prepareWorstCase(long[] values, String[] lines, boolean decrescente) {
         Integer[] indices = new Integer[values.length];
         for (int i = 0; i < values.length; i++) indices[i] = i;
 
         // Ordena os índices para criar o pior caso
-        Arrays.sort(indices, (a, b) -> Long.compare(values[a], values[b]));
+        Arrays.sort(indices, (a, b) -> decrescente ? Long.compare(values[b], values[a]) : Long.compare(values[a], values[b]));
 
         // Cria arrays temporários ordenados
         long[] sortedValues = new long[values.length];
@@ -131,27 +131,26 @@ public class QuickPiorCaso {
     }
 
     // QuickSort padrão (pior caso: array já ordenado)
-    private static void quickSort(long[] values, String[] lines, int low, int high) {
+    private static void quickSort(long[] values, String[] lines, int low, int high, boolean decrescente) {
         while (low < high) {
-            int pivotIndex = partition(values, lines, low, high);
-            // Recursão na menor partição para evitar stack overflow
+            int pivotIndex = partition(values, lines, low, high, decrescente);
             if (pivotIndex - low < high - pivotIndex) {
-                quickSort(values, lines, low, pivotIndex - 1);
+                quickSort(values, lines, low, pivotIndex - 1, decrescente);
                 low = pivotIndex + 1;
             } else {
-                quickSort(values, lines, pivotIndex + 1, high);
+                quickSort(values, lines, pivotIndex + 1, high, decrescente);
                 high = pivotIndex - 1;
             }
         }
     }
 
     // Particionamento do QuickSort
-    private static int partition(long[] values, String[] lines, int low, int high) {
+    private static int partition(long[] values, String[] lines, int low, int high, boolean decrescente) {
         long pivot = values[high];
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
-            if (values[j] <= pivot) {
+            if ((decrescente && values[j] >= pivot) || (!decrescente && values[j] <= pivot)) {
                 i++;
                 swap(values, lines, i, j);
             }

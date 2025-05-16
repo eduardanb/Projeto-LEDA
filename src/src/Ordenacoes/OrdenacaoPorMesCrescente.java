@@ -49,9 +49,9 @@ public class OrdenacaoPorMesCrescente {
         String SaidaCountingMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_melhorCaso.csv";
         String SaidaCountingMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_medioCaso.csv";
         String SaidaCountingPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_countingSort_piorCaso.csv";
-        String SaidaMergeMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_melhorCaso.csv";
-        String SaidaMergeMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_medioCaso.csv";
-        String SaidaMergePiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_mesCrescente_piorCaso.csv";
+        String SaidaMergeMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_mergeSort_melhorCaso.csv";
+        String SaidaMergeMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_mergeSort_medioCaso.csv";
+        String SaidaMergePiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_month_mergeSort_piorCaso.csv";
 
         // Counting Sort - Melhor Caso
         try {
