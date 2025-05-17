@@ -1,6 +1,4 @@
 package Ordenacoes;
-/*Ordenar o arquivo completo de senhas pelo campo length em ordem decrescente.
-Deve-se gerar um arquivo para cada algoritmo de ordenação e o tipo de caso. Por exemplo, passwords_length_insertionSort_medioCaso.csv, passwords_length_insertionSort_piorCaso.csv, passwords_length_insertionSort_melhorCaso.csv */
 
 import Ordenacoes.CountingSort.*;
 import Ordenacoes.HeapSort.*;
@@ -36,8 +34,8 @@ public class OrdenacaoLengthDecrescente {
 
 
     public static void Ordenacao(String[] args) {
-        // Exemplo de uso do Counting Sort para ordenar um arquivo CSV pela coluna "length"
-        String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
+        
+        String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; 
         String SaidaMedioCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_length_countingSort_medioCaso.csv"; 
         String SaidaPiorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_length_countingSort_piorCaso.csv"; 
         String SaidaMelhorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_length_countingSort_melhorCaso.csv"; 
@@ -73,10 +71,10 @@ public class OrdenacaoLengthDecrescente {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
 
-        // Exemplo de uso do Merge Sort para ordenar um arquivo CSV pela coluna "length"
         String SaidaMedioCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_length_mergeSort_medioCaso.csv";
         String SaidaPiorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_length_mergeSort_piorCaso.csv";
         String SaidaMelhorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_length_mergeSort_melhorCaso.csv";
+
         try {
             // Chamada para o método de ordenação Merge Sort
             long Inicio = System.nanoTime();
@@ -109,7 +107,6 @@ public class OrdenacaoLengthDecrescente {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
 
-        // Exemplo de uso do Quick Sort mediana de 3 para ordenar um arquivo CSV pela coluna "length"
         String SaidaMedioCasoQuickMedianaDe3 = "src\\ArquivosCSVOrdenados\\passwords_length_quickSortMedianaDe3_medioCaso.csv";
         String SaidaPiorCasoQuickMedianaDe3 = "src\\ArquivosCSVOrdenados\\passwords_length_quickSortMedianaDe3_piorCaso.csv";
         String SaidaMelhorCasoQuickMedianaDe3 = "src\\ArquivosCSVOrdenados\\passwords_length_quickSortMedianaDe3_melhorCaso.csv";

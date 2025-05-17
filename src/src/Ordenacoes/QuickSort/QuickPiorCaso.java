@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class QuickPiorCaso {
 
-    // Interface funcional para extrair valores de uma coluna
     @FunctionalInterface
     interface ValueExtractor {
         long extract(String data, int rowIndex) throws Exception;
@@ -77,7 +76,6 @@ public class QuickPiorCaso {
         // Ordena os índices para criar o pior caso
         Arrays.sort(indices, (a, b) -> decrescente ? Long.compare(values[b], values[a]) : Long.compare(values[a], values[b]));
 
-        // Cria arrays temporários ordenados
         long[] sortedValues = new long[values.length];
         String[] sortedLines = new String[lines.length];
 
@@ -86,12 +84,10 @@ public class QuickPiorCaso {
             sortedLines[i] = lines[indices[i]];
         }
 
-        // Substitui os arrays originais pelos ordenados
         System.arraycopy(sortedValues, 0, values, 0, values.length);
         System.arraycopy(sortedLines, 0, lines, 0, lines.length);
     }
 
-    // Lê todas as linhas do CSV em um array de Strings
     private static String[] readCSV(String inputFilePath) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             return br.lines().toArray(String[]::new);

@@ -132,6 +132,16 @@ Projeto-LEDA/
 │   ├── ClassificacaoDeSenhas.java    # Classe para classificação das senhas
 │   ├── TransformadorDeDados.java     # Classe para transformação e filtragem dos dados
 │   ├── ClassificacaoBoaeMuitoboa.java # Classe para filtrar senhas "Boa" e "Muito Boa"
+│   ├── Ordenacoes/
+│   │   ├── Algoritmos/
+│   │   │   ├── MergeSort/
+│   │   │   ├── QuickSort/
+│   │   │   ├── QuickSortMediana3/
+│   │   │   └── SelectionSort/
+│   │   ├── Criterios/
+│   │   │   ├── OrdenacaoDataCrescente.java
+│   │   │   ├── OrdenacaoLengthDecrescente.java
+│   │   │   └── OrdenacaoPorMesCrescente.java
 ├── ArquivosCSV/
 │   ├── passwords.csv                 # Arquivo de entrada com as senhas
 │   ├── password_classifier.csv       # Arquivo com as senhas classificadas
@@ -179,16 +189,148 @@ Posicao,Senha,Tamanho,Data,Class
 
 ---
 
-## **Próximos Passos**
-A **Parte 2** do projeto será focada em **ordenações**. O arquivo `passwords_formated_data.csv` será utilizado como entrada para:
-1. Ordenar as senhas pelo campo `Tamanho` em ordem decrescente.
-2. Ordenar as senhas pelo **mês** da coluna `Data` em ordem crescente.
-3. Ordenar as senhas pela coluna `Data` em ordem crescente.
+## *Parte 2 : Ordenações*
+### 1. *Ordenações*
+O arquivo passwords_formated_data.csv será utilizado como entrada para:
+1. Ordenar as senhas pelo campo Tamanho em ordem decrescente.
+2. Ordenar as senhas pelo *mês* da coluna Data em ordem crescente.
+3. Ordenar as senhas pela coluna Data em ordem crescente.
 
-Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: **melhor**, **médio** e **pior**.
+Cada ordenação será realizada utilizando diferentes algoritmos de ordenação e analisada em três casos: *melhor, **médio* e *pior*.
+
+### *Casos de Teste*
+Para cada combinação de algoritmo e critério, foram executados três cenários:
+
+#### *Melhor Caso*
+- Dados já estão na ordem desejada
+- Mostra o desempenho ideal do algoritmo
+
+#### *Pior Caso*
+- Dados estão na ordem inversa à desejada
+- Mostra o pior desempenho do algoritmo
+
+#### *Caso Médio*
+- Dados estão em ordem aleatória
+- Mostra o desempenho médio do algoritmo
+- Utiliza uma permutação aleatória dos dados originais
+
+### *Algoritmos Implementados*
+Foram implementados e testados os seguintes algoritmos de ordenação:
+
+- Insertion Sort
+- Selection Sort
+- QuickSort Mediana 3
+- Couting Sort
+- Heap Sort
+- Merge Sort
+- QuickSort
+
+### *Estrutura do Projeto*
+
+```plaintext
+src/
+├── Ordenacoes/
+│   ├── Algoritmos/                      # Implementações dos algoritmos puros
+│   │   ├── MergeSort/
+│   │   │   ├── MergeMelhorCaso.java
+│   │   │   ├── MergeMedioCaso.java
+│   │   │   └── MergePiorCaso.java
+│   │   ├── QuickSort/
+│   │   │   ├── QuickMelhorCaso.java
+│   │   │   ├── QuickMedioCaso.java
+│   │   │   └── QuickPiorCaso.java
+│   │   ├── QuickSortMediana3/
+│   │   │   ├── Quick3MelhorCaso.java
+│   │   │   ├── Quick3MedioCaso.java
+│   │   │   └── Quick3PiorCaso.java
+│   │   └── SelectionSort/
+│   │       ├── SelectionMelhorCaso.java
+│   │       ├── SelectionMedioCaso.java
+│   │       └── SelectionPiorCaso.java
+│   ├── Criterios/                       # Critérios de ordenação (independentes de algoritmo)
+│       ├── OrdenacaoDataCrescente.java
+│       ├── OrdenacaoLengthDecrescente.java
+│       └── OrdenacaoPorMesCrescente.java
+│
+└── Main.java
+```
 
 ---
-**OBS**: Para baixar um arquivo .zip basta ir em **código** e **Baixar ZIP** (no GitHub). Como no Canvas só aceita uma URL, enviamos apenas o link do repositório, mas, por via das dúvidas, adicionamos um arquivo .zip do projeto dentro da pasta.
+
+### *Exemplo de Entrada e Saída para SelectionSort*
+
+#### *Melhor Caso Selection*
+
+##### **Entrada (passwords_formated_data.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+1,abc123,6,10/04/2023,Fraca
+2,Password@123,12,10/04/2023,Muito Boa
+3,12345,5,10/04/2023,Ruim
+4,StrongPass1!,11,10/04/2023,Boa
+```
+
+##### **Saída (passwords_length_selectionSort_melhorCaso.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+2,Password@123,12,10/04/2023,Muito Boa
+4,StrongPass1!,11,10/04/2023,Boa
+1,abc123,6,10/04/2023,Fraca
+3,12345,5,10/04/2023,Ruim
+```
 
 ---
+
+#### *Medio Caso Selection*
+
+##### **Exemplo de Entrada (passwords_formated_data.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+1,abc123,6,10/04/2023,Fraca
+2,Password@123,12,10/04/2023,Muito Boa
+3,12345,5,10/04/2023,Ruim
+4,StrongPass1!,11,10/04/2023,Boa
+```
+
+##### **Exemplo de Saída (passwords_length_selectionSort_medioCaso.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+2,Password@123,12,10/04/2023,Muito Boa
+4,StrongPass1!,11,10/04/2023,Boa
+1,abc123,6,10/04/2023,Fraca
+3,12345,5,10/04/2023,Ruim
+```
+
+---
+
+#### *Pior Caso Selection*
+
+##### **Exemplo de Entrada (passwords_formated_data.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+3,12345,5,10/04/2023,Ruim
+1,abc123,6,10/04/2023,Fraca
+4,StrongPass1!,11,10/04/2023,Boa
+2,Password@123,12,10/04/2023,Muito Boa
+```
+
+##### **Exemplo de Saída (passwords_length_selectionSort_piorCaso.csv)**
+```csv
+Posicao,Senha,Tamanho,Data,Class
+2,Password@123,12,10/04/2023,Muito Boa
+4,StrongPass1!,11,10/04/2023,Boa
+1,abc123,6,10/04/2023,Fraca
+3,12345,5,10/04/2023,Ruim
+```
+
+---
+
+*OBS: Para baixar um arquivo .zip basta ir em **código** e **Baixar ZIP** (no GitHub).*
+
+---
+
+*Link para o relatório desenvolvido: https://docs.google.com/document/d/1HyWCQDnAUGs4xai08_fu4kB299BLJ9yqgqJyq9ko9J8/edit?usp=sharing*
+
+---
+
 Colaboradores: [Maria Eduarda da Nóbrega, João Victor da Silva Almeida Guimarães e Adrielly Carla Ferreira de Melo]

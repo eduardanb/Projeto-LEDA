@@ -34,8 +34,8 @@ public class OrdenacaoDataCrescente {
 
 
     public static void Ordenacao(String[] args) {
-        // Exemplo de uso do Counting Sort para ordenar um arquivo CSV pela coluna "length"
-        String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; // Substitua pelo caminho do arquivo de entrada
+
+        String EntradaCSV = "src\\ArquivosCSV\\passwords_formated_data.csv"; 
         String SaidaMedioCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_medioCaso.csv"; 
         String SaidaPiorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_piorCaso.csv"; 
         String SaidaMelhorCasoCounting = "src\\ArquivosCSVOrdenados\\passwords_data_countingSort_melhorCaso.csv"; 
@@ -108,11 +108,10 @@ public class OrdenacaoDataCrescente {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
         
-
-        //Exemplo de uso do Merge Sort para ordenar um arquivo CSV pela coluna "length"
         String SaidaMedioCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_medioCaso.csv";
         String SaidaPiorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_piorCaso.csv";
         String SaidaMelhorCasoMerge = "src\\ArquivosCSVOrdenados\\passwords_data_mergeSort_melhorCaso.csv";
+
         try {
             // Chamada para o método de ordenação Merge Sort
             long Inicio = System.nanoTime();
@@ -192,6 +191,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Quick Sort - Pior Caso
         String SaidaQuickPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_quickSort_piorCaso.csv";
         try {
@@ -204,6 +204,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Quick Sort - Médio Caso
         String SaidaQuickMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_quickSort_medioCaso.csv";
         try {
@@ -216,6 +217,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Heap Sort - Melhor Caso
         String SaidaHeapSortMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_heapSort_melhorCaso.csv";
         try {
@@ -228,6 +230,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Heap Sort - Pior Caso
         String SaidaHeapSortPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_heapSort_piorCaso.csv";
         try {
@@ -240,6 +243,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Heap Sort - Médio Caso
         String SaidaHeapSortMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_heapSort_medioCaso.csv";
         try {
@@ -252,6 +256,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Insection Sort - Melhor Caso
         String SaidaInsectionSortMelhorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_insectionSort_melhorCaso.csv";
         try {
@@ -264,6 +269,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+
         //Insection Sort - Pior Caso
         String SaidaInsectionSortPiorCaso = "src\\ArquivosCSVOrdenados\\passwords_data_insectionSort_piorCaso.csv";
         try {
@@ -276,6 +282,7 @@ public class OrdenacaoDataCrescente {
         } catch (IOException e) {
             System.err.println("Erro ao processar o arquivo: " + e.getMessage());
         }
+        
         //Insection Sort - Médio Caso
         String SaidaInsectionSortMedioCaso = "src\\ArquivosCSVOrdenados\\passwords_data_insectionSort_medioCaso.csv";
         try {
