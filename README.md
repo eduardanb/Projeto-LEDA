@@ -78,17 +78,13 @@ Durante a execução da Parte 1, os seguintes arquivos são gerados:
 
 #### **Windows**
 1. Abra o Prompt de Comando (cmd).
-2. Navegue até o diretório do projeto:
+2. Compilar:
    ```cmd
-   cd c:\Users\eduar\Documents\UEPB - 4º Período\LEDA\Projeto-LEDA
+   javac -d out src/Aplicacao/Main.java
    ```
-3. Compile o código:
+3. Executar:
    ```cmd
-   javac src\src\*.java
-   ```
-4. Execute o programa:
-   ```cmd
-   java -cp src\src Main
+   java -cp out Aplicacao.Main
    ```
 
 #### **Linux**
@@ -107,46 +103,33 @@ Durante a execução da Parte 1, os seguintes arquivos são gerados:
    ```
 
 #### **macOS**
-1. Abra o terminal.
-2. Navegue até o diretório do projeto:
-   ```bash
-   cd /caminho/para/Projeto-LEDA
+1. Abra o Prompt de Comando (cmd).
+2. Compilar:
+   ```cmd
+   javac -d out src/Aplicacao/Main.java
    ```
-3. Compile o código:
-   ```bash
-   javac src/src/*.java
+3. Executar:
+   ```cmd
+   java -cp out Aplicacao.Main
    ```
-4. Execute o programa:
-   ```bash
-   java -cp src/src Main
-   ```
-
 ---
 
 ## **Estrutura do Projeto**
 ```plaintext
 Projeto-LEDA/
 ├── src/
-│   ├── Main.java                     # Classe principal
-│   ├── LerArquivosCsv.java           # Classe para leitura do arquivo CSV
-│   ├── ClassificacaoDeSenhas.java    # Classe para classificação das senhas
-│   ├── TransformadorDeDados.java     # Classe para transformação e filtragem dos dados
-│   ├── ClassificacaoBoaeMuitoboa.java # Classe para filtrar senhas "Boa" e "Muito Boa"
-│   ├── Ordenacoes/
-│   │   ├── Algoritmos/
-│   │   │   ├── MergeSort/
-│   │   │   ├── QuickSort/
-│   │   │   ├── QuickSortMediana3/
-│   │   │   └── SelectionSort/
-│   │   ├── Criterios/
-│   │   │   ├── OrdenacaoDataCrescente.java
-│   │   │   ├── OrdenacaoLengthDecrescente.java
-│   │   │   └── OrdenacaoPorMesCrescente.java
-├── ArquivosCSV/
-│   ├── passwords.csv                 # Arquivo de entrada com as senhas
-│   ├── password_classifier.csv       # Arquivo com as senhas classificadas
-│   ├── passwords_formated_data.csv   # Arquivo com a data transformada
-│   ├── passwords_classifier.csv      # Arquivo com senhas "Boa" e "Muito Boa"
+│   ├── Aplicacao     
+│   │  ├── Main.java                     # Classe principal
+│   ├──Classificacao
+│   │  ├── LerArquivosCsv.java           # Classe para leitura do arquivo CSV
+│   │  ├── ClassificacaoDeSenhas.java    # Classe para classificação das senhas
+│   │  ├── TransformadorDeDados.java     # Classe para transformação e filtragem dos dados
+│   │  ├── ClassificacaoBoaeMuitoboa.java # Classe para filtrar senhas "Boa" e "Muito Boa"
+│   ├── ArquivosCSV/
+│     ├── passwords.csv                 # Arquivo de entrada com as senhas
+│     ├── password_classifier.csv       # Arquivo com as senhas classificadas
+│     ├── passwords_formated_data.csv   # Arquivo com a data transformada
+│     ├── passwords_classifier.csv      # Arquivo com senhas "Boa" e "Muito Boa"
 ```
 
 ---
